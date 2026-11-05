@@ -1,0 +1,7 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bcb-score-carcdsi:local
+    command: ["python", "-c", "import matplotlib, numpy, pandas, sklearn; print('Ambiente do projeto validado')"]

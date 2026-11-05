@@ -1,3 +1,6 @@
+# Package manager
+pip==26.3
+
 # Core data analysis and visualization
 matplotlib==3.11.1
 numpy==2.5.2
