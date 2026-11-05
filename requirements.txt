@@ -1,0 +1,7 @@
+# Core data analysis and visualization
+matplotlib==3.11.1
+numpy==2.5.2
+pandas==3.0.5
+
+# Machine learning
+scikit-learn==1.9.1
