@@ -1,0 +1,1 @@
+"""Transformações aplicadas depois da validação dos dados."""

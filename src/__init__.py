@@ -1,0 +1,1 @@
+"""Sistema de análise e previsão de risco de crédito do SCR."""

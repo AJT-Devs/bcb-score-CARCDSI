@@ -1,0 +1,1 @@
+"""Gráficos de evolução e comparação dos indicadores."""

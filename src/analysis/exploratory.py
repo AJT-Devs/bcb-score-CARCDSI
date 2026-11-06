@@ -1,0 +1,1 @@
+"""Funções para análises exploratórias do SCR."""

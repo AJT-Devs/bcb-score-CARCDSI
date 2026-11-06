@@ -4,4 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: bcb-score-carcdsi:local
+    environment:
+      DATA_RAW_DIR: /app/data/raw
+    volumes:
+      - ./data/raw:/app/data/raw:ro
     command: ["python", "-c", "import matplotlib, numpy, pandas, sklearn; print('Ambiente do projeto validado')"]

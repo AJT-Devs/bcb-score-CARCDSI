@@ -1,0 +1,1 @@
+"""Criação de atributos de domínio para risco de crédito."""
