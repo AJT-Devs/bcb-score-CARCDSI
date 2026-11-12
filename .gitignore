@@ -22,5 +22,15 @@ dist/
 .env.*
 !.env.example
 
-# Local datasets
-/data/
+# Local datasets and generated data
+data/**/*.csv
+data/**/*.parquet
+data/**/*.feather
+data/**/*.pkl
+data/**/*.pickle
+data/**/*.joblib
+
+# Keep the documented data layout visible in the repository
+!data/**/
+!data/**/.gitkeep
+!data/data.md
