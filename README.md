@@ -33,7 +33,7 @@ O leitor espera arquivos CSV com separador `;`. Os dados brutos devem permanecer
 │   ├── interim/           # Dados intermediários, ignorados pelo Git
 │   ├── processed/         # Dados preparados, ignorados pelo Git
 │   └── data.md            # Instruções para obtenção e organização dos dados
-├── docs/                  # Entregas e documentação acadêmica
+├── docs/                  # Entregas e arquitetura da pesquisa
 ├── src/
 │   ├── config/            # Configurações e constantes de domínio
 │   ├── data/              # Leitura, validação e pré-processamento
@@ -125,11 +125,13 @@ Variáveis disponíveis:
 - `LLM_REQUEST_TIMEOUT_SECONDS`: timeout das requisições.
 - `DATA_RAW_DIR`: diretório dos CSVs brutos.
 
-As requisições são feitas por `src/services/ia/client.py`. Testes automatizados não devem chamar provedores reais; use mocks ou stubs.
+As requisições dos provedores integrados são feitas por `src/services/ia/client.py`. `generate_briefing` também aceita um cliente que implemente `LLMClient`, permitindo outros provedores sem modificar o briefing; nomes de provedor desconhecidos são rejeitados. Testes automatizados não devem chamar provedores reais; use mocks ou stubs.
 
 ## Validação e metodologia
 
 As divisões de treino e teste devem respeitar a ordem de `data_base`. O denominador das proporções é `carteira_ativa` e casos de denominador zero precisam ser tratados explicitamente.
+
+Consulte [a arquitetura e o estado de implementação](docs/arquitetura.md) para os modelos, baselines e métricas previstos nos entregáveis. Os experimentos ainda não estão implementados.
 
 Consulte [`AGENTS.md`](AGENTS.md) para as regras completas de negócio, arquitetura, segurança e registro das atividades em `artifacts/`.
 

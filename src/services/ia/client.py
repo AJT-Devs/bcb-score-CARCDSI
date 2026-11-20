@@ -2,7 +2,7 @@
 
 import json
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -14,6 +14,12 @@ class LLMResponse:
     provider: str
     text: str
     raw: dict[str, Any]
+
+
+class LLMClient(Protocol):
+    """Contrato para qualquer cliente que interprete um prompt de texto."""
+
+    def generate(self, prompt: str) -> LLMResponse: ...
 
 
 class LLMRequestError(RuntimeError):

@@ -1,1 +1,0 @@
-"""Ponto de extensão para modelos baseados em árvores."""
