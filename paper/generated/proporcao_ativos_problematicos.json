@@ -1,0 +1,88 @@
+{
+  "candidates": [
+    {
+      "config": {
+        "iterations": 200,
+        "depth": 4,
+        "learning_rate": 0.05,
+        "loss_function": "MAE",
+        "random_seed": 42,
+        "thread_count": 4,
+        "verbose": false,
+        "allow_writing_files": false,
+        "nan_mode": "Min"
+      },
+      "validation": {
+        "n_eligible": 591891,
+        "n": 591891,
+        "coverage": 1.0,
+        "mae": 0.038684796161461914,
+        "rmse": 0.1279363121514361,
+        "mae_pp": 3.868479616146191,
+        "rmse_pp": 12.793631215143611,
+        "r2": 0.8738066996512269,
+        "out_of_range": 24281
+      }
+    },
+    {
+      "config": {
+        "iterations": 200,
+        "depth": 6,
+        "learning_rate": 0.05,
+        "loss_function": "MAE",
+        "random_seed": 42,
+        "thread_count": 4,
+        "verbose": false,
+        "allow_writing_files": false,
+        "nan_mode": "Min"
+      },
+      "validation": {
+        "n_eligible": 591891,
+        "n": 591891,
+        "coverage": 1.0,
+        "mae": 0.039215031099940637,
+        "rmse": 0.1273563898931843,
+        "mae_pp": 3.9215031099940636,
+        "rmse_pp": 12.73563898931843,
+        "r2": 0.8749481494636562,
+        "out_of_range": 25347
+      }
+    }
+  ],
+  "selected": {
+    "iterations": 200,
+    "learning_rate": 0.05,
+    "depth": 4,
+    "loss_function": "MAE",
+    "nan_mode": "Min",
+    "thread_count": 4,
+    "random_seed": 42,
+    "verbose": false,
+    "allow_writing_files": false
+  },
+  "features": [
+    "uf",
+    "segmento",
+    "cliente",
+    "cnae_ocupacao",
+    "porte",
+    "modalidade",
+    "submodalidade",
+    "origem",
+    "indexador",
+    "carteira_ativa",
+    "carteira_inadimplencia",
+    "ativo_problematico",
+    "month_number",
+    "proporcao_inadimplencia",
+    "proporcao_ativos_problematicos",
+    "proporcao_inadimplencia_lag1",
+    "proporcao_inadimplencia_lag2",
+    "proporcao_inadimplencia_mean3",
+    "proporcao_ativos_problematicos_lag1",
+    "proporcao_ativos_problematicos_lag2",
+    "proporcao_ativos_problematicos_mean3"
+  ],
+  "training_rows": 2415028,
+  "refit": false
+}

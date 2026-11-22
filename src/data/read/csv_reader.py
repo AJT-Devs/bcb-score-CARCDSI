@@ -21,7 +21,7 @@ class CSVReader:
     def iter_frames(self, paths: Sequence[Path] | None = None) -> Iterator[pd.DataFrame]:
         selected_paths = paths if paths is not None else self.files()
         for path in selected_paths:
-            yield pd.read_csv(path, sep=DATA_SEPARATOR, low_memory=False)
+            yield pd.read_csv(path, sep=DATA_SEPARATOR, decimal=",", encoding="utf-8-sig", low_memory=False)
 
     def read_all(self) -> pd.DataFrame:
         frames = list(self.iter_frames())

@@ -1,3 +1,5 @@
+> Registro histórico preservado. Em 22/11/2026, a decisão vigente passou a CatBoost e Chronos-2 com baselines temporais. Este texto não comprova execução dos modelos anteriores. Consulte [o protocolo atual](protocolo-catboost-chronos2.md) e [o funcionamento efetivo](funcionamento-efetivo.md).
+
 Apresentar os Modelos de Machine Learning que serão utilizados e as métricas de desempenho dos modelos.
 
 # Dataset e objetivos

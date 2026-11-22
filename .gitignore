@@ -1,5 +1,11 @@
 # Python environments
 .venv/
+.tools/
+runs/
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
 venv/
 env/
 

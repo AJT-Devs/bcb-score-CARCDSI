@@ -1,23 +1,30 @@
-# Arquitetura e escopo científico
+# Arquitetura e escopo científico vigente
 
-Os entregáveis [1](entregavel-1.md) e [2](entregavel-2.md) definem o estudo de risco de crédito agregado com dados mensais SCR.data. O objetivo é prever, um mês à frente, as proporções de inadimplência e de ativos problemáticos para perfis de crédito. Este documento distingue a estrutura existente das etapas ainda necessárias para produzir resultados reproduzíveis.
+Atualização de 22/11/2026: os modelos principais são CatBoost e Chronos-2, com baselines temporais. Os entregáveis históricos e o plano Qwen preservam decisões anteriores e não descrevem o experimento vigente. A arquitetura anterior continha principalmente pontos de extensão para modelagem; esta rodada conecta um fluxo executável.
 
-## Fluxo de pesquisa
+## Responsabilidades
 
-1. **Dados:** `data/read/` lê CSVs mensais separados por `;`; `data/validation/` verifica integridade; `data/preprocessing/` prepara dados e calcula as duas proporções com `carteira_ativa` como denominador. Os dados brutos permanecem inalterados e denominadores zero resultam em valor ausente.
-2. **Análise e atributos:** `analysis/` e `features/` reservam as análises exploratórias, estatísticas e de correlação, além da engenharia e seleção de atributos. As transformações aprendidas devem ser ajustadas somente nos dados de treino.
-3. **Experimentos:** `models/` reserva regressão linear múltipla, árvore de decisão, k-NN e baselines ingênuo, sazonal ingênuo, média móvel e drift. As divisões temporais devem impedir que meses futuros influenciem o treino de meses anteriores; a avaliação deve ser separada para cada target e usar MAE principal, RMSE e R². O baseline sazonal depende de histórico suficiente.
-4. **Interpretação:** `services/ia/` recebe métricas e contexto já calculados e produz briefings auditáveis; o LLM não calcula proporções, escolhe resultados silenciosamente nem cria previsões. `visualization/` reserva gráficos para comunicação científica.
-5. **Orquestração:** `pipelines/` deve compor as etapas existentes, registrando períodos, filtros, dados ausentes, configurações, métricas e limitações necessários à reprodução e ao artigo.
+1. `src/config/`: caminhos configuráveis e constantes oficiais. A chave real inclui origem e indexador.
+2. `src/data/read/panel.py`: ingestão em chunks, validação de esquema/mês/chave, auditoria SHA256. O leitor genérico CSVReader permanece disponível. Nenhum modifica os brutos. O leitor compõe `data/validation/data_validator.py` e `panel_validator.py` para esquema, mês, totais e unicidade.
+3. `src/data/preprocessing/transformer.py`: proporções com máscaras de denominador e numerador inválidos. Não treina modelos.
+4. `src/features/temporal.py`: junções exatas por perfil e calendário para targets t+1, lags e média3, sem preenchimento de lacunas.
+5. `src/models/`: baselines, cortes, métricas, dois CatBoost independentes e Chronos-2 local zero-shot. A seleção usa somente validação; o teste não refaz ajuste.
+6. `src/pipelines/experiment.py`: composição e registro de dados, modelos, previsões, métricas, cobertura e limitações. `prediction_pipeline.py` recarrega CatBoost e reutiliza atributos na inferência em lote.
+7. `src/visualization/experiment.py` e `export_paper.py`: figura, tabela TeX e evidências pequenas derivadas de resultados calculados.
+8. `src/services/ia/`: interpretação desacoplada. O experimento exporta briefing numérico sem chamada externa.
 
-## Estado de implementação
+Os módulos antigos de regressão linear, árvore e k-NN continuam como pontos de extensão históricos; não são experimentos executados.
 
-Existem leitura, validação básica, pré-processamento inicial e clientes LLM. Os módulos de análise, atributos, modelos, avaliação, visualização e pipelines são pontos de extensão, não experimentos funcionais. Em particular, ainda é necessário implementar a construção temporal dos targets, divisões sem vazamento, ajuste de transformações apenas no treino, baselines, modelos e métricas antes de apresentar resultados científicos. A codificação categórica existente é inicial e não constitui uma transformação treinável pronta para avaliação temporal.
+## Contratos e limites
 
-## Serviços de LLM
+Unidade: nove dimensões oficiais por mês. Não agregar perfis implicitamente nem somar totais/componentes. Brutos em `data/raw`; intermediários em `data/interim/2025`; resultados/modelos em `runs/` ignorado; evidências pequenas em `paper/generated`. Caminhos de dados e resultados são configuráveis.
 
-`LLMClient` define o contrato `generate(prompt) -> LLMResponse`, que preserva provedor, texto e resposta original. `generate_briefing` aceita um cliente compatível por injeção; assim, novos provedores ou modelos podem ser implementados sem alterar o briefing. Os atalhos `gemini` e `nvidia` permanecem disponíveis e um nome desconhecido é rejeitado explicitamente. Quando `client` é fornecido, ele determina o provedor e o argumento `provider` é ignorado. Os clientes existentes mantêm seus modelos, credenciais e timeout configuráveis por ambiente. Integrações novas devem definir sua própria configuração e tratamento de credenciais, sem registrar segredos; testes usam substitutos sem rede.
+Treino: origens jan–ago, targets fev–set; validação: set–out, targets out–nov; teste: novembro, target dezembro. Sem refit. Publicações históricas não reconstruídas: o atraso oficial torna a hipótese por data-base potencialmente otimista operacionalmente. Baseline sazonal12 indisponível.
 
-## Convenções de nomes
+CatBoost usa perfil, saldos e histórico; Chronos usa três proporções históricas por alvo. Comparação na interseção dos métodos efetivamente executados; cobertura total também é reportada. Piloto Chronos amostrado por chave para limitar custo CPU. Fine-tuning não implementado nem executado. Um ciclo anual e um mês de teste não comprovam generalização robusta.
 
-Pacotes e módulos Python usam inglês e `snake_case`, com nomes que descrevem responsabilidades ou métodos de pesquisa. `services/ia/` é mantido conforme a estrutura do projeto. Documentos de entrega usam português e nomes em minúsculas com hífens; logs numerados em `artifacts/` mantêm seus nomes históricos. Nomes oficiais de colunas e targets não são traduzidos ou renomeados.
+Detalhes, comandos, funções e fluxos: [funcionamento efetivo](funcionamento-efetivo.md), [protocolo](protocolo-catboost-chronos2.md) e [execução](resultados-execucao.md).
+
+## Serviços LLM
+
+`LLMClient.generate(prompt) -> LLMResponse` preserva provedor, texto e resposta original. `generate_briefing` permite cliente injetado e atalhos Gemini/NVIDIA. Chaves ficam no ambiente, nunca nos resultados. Testes usam mocks. O LLM recebe números calculados; não valida estatística nem cria previsões.

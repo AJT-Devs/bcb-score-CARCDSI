@@ -1,5 +1,7 @@
 .git/
 .venv/
+.tools/
+runs/
 __pycache__/
 *.py[cod]
 .pytest_cache/

@@ -1,0 +1,776 @@
+{
+  "months": {
+    "2025-01": {
+      "rows": 313638,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 14241,
+        "proporcao_ativos_problematicos": 14241
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 313638,
+        "proporcao_ativos_problematicos": 313638
+      },
+      "category_changes": {
+        "uf": {
+          "added": [
+            "AC",
+            "AL",
+            "AM",
+            "AP",
+            "BA",
+            "CE",
+            "DF",
+            "ES",
+            "GO",
+            "MA",
+            "MG",
+            "MS",
+            "MT",
+            "PA",
+            "PB",
+            "PE",
+            "PI",
+            "PR",
+            "RJ",
+            "RN",
+            "RO",
+            "RR",
+            "RS",
+            "SC",
+            "SE",
+            "SP",
+            "TO"
+          ],
+          "removed": []
+        },
+        "segmento": {
+          "added": [
+            "Arrendamento",
+            "Banco",
+            "Cooperativa",
+            "Desenvolvimento/Fomento",
+            "Financeira",
+            "Fintech",
+            "Instituição de pagamento",
+            "Outros"
+          ],
+          "removed": []
+        },
+        "cliente": {
+          "added": [
+            "PF",
+            "PJ"
+          ],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [
+            "Administração pública, defesa e seguridade social",
+            "Agricultura, pecuária, produção florestal, pesca e aquicultura",
+            "Alojamento e alimentação",
+            "Aposentado/pensionista",
+            "Artes, cultura, esporte e recreação",
+            "Atividades administrativas e serviços complementares",
+            "Atividades financeiras, de seguros e serviços relacionados",
+            "Atividades imobiliárias",
+            "Atividades profissionais, científicas e técnicas",
+            "Autônomo",
+            "Comércio; reparação de veículos automotores e motocicletas",
+            "Construção",
+            "Educação",
+            "Eletricidade e gás",
+            "Empregado de empresa privada",
+            "Empregado de entidades sem fins lucrativos",
+            "Empresário",
+            "Indústrias de transformação",
+            "Indústrias extrativas",
+            "Informação e comunicação",
+            "MEI",
+            "Não informados",
+            "Organismos internacionais e outras instituições extraterritoriais",
+            "Outras atividades de serviços",
+            "Outros",
+            "Saúde humana e serviços sociais",
+            "Servidor ou empregado público",
+            "Serviços domésticos",
+            "Transporte, armazenagem e correio",
+            "Água, esgoto, atividades de gestão de resíduos e descontaminação"
+          ],
+          "removed": []
+        },
+        "porte": {
+          "added": [
+            "Acima de 20 salários mínimos",
+            "Até 1 salário mínimo",
+            "Grande",
+            "Indisponível",
+            "Mais de 1 a 2 salários mínimos",
+            "Mais de 10 a 20 salários mínimos",
+            "Mais de 2 a 3 salários mínimos",
+            "Mais de 3 a 5 salários mínimos",
+            "Mais de 5 a 10 salários mínimos",
+            "Micro",
+            "Médio",
+            "Pequeno",
+            "Sem rendimento"
+          ],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [
+            "Adiantamentos a depositantes",
+            "Direitos creditórios descontados",
+            "Empréstimos",
+            "Financiamentos",
+            "Financiamentos com interveniência",
+            "Financiamentos de infraestrutura e desenvolvimento",
+            "Financiamentos de títulos e valores mobiliários",
+            "Financiamentos imobiliários",
+            "Financiamentos rurais  (ex-financiamentos rurais e agroindustriais)",
+            "Financiamentos à exportação",
+            "Financiamentos à importação",
+            "Operações de arrendamento",
+            "Outros créditos"
+          ],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [
+            "ARO - adiantamento de receitas orçamentárias",
+            "Adiantamento sobre cambiais entregues",
+            "Adiantamento sobre contratos de câmbio",
+            "Adiantamentos a depositantes",
+            "Antecipação de fatura de cartão de crédito",
+            "Aquisição de bens - outros bens",
+            "Aquisição de bens - veículos automotores",
+            "Aquisição de bens com interveniência - outros bens",
+            "Aquisição de bens com interveniência - veículos autom.",
+            "Arrendamento financeiro de veículos automotores",
+            "Arrendamento financeiro exceto veículos automotores e imóveis",
+            "Arrendamento financeiro imobiliário",
+            "Arrendamento operacional",
+            "Avais e fianças honrados",
+            "Capital de giro com prazo de vencimento até 365 dias",
+            "Capital de giro com prazo de vencimento superior a 365 dias",
+            "Capital de giro com teto rotativo",
+            "Cartão de crédito - compra ou fatura parcelada pela instituição financeira emitente do cartão",
+            "Cartão de crédito - compra à vista e parcelado lojista ",
+            "Cartão de crédito - compra, fatura parcelada ou saque financiado pela instituição financeira emitente do cartão",
+            "Cartão de crédito - não migrado",
+            "Cheque especial",
+            "Comercialização ",
+            "Compror",
+            "Conta Garantida",
+            "Créd decorrentes de contratos de exportação-export note",
+            "Crédito pessoal - com consignação em folha de pagam.",
+            "Crédito pessoal - sem consignação em folha de pagam.",
+            "Crédito rotativo vinculado a cartão de crédito",
+            "Custeio",
+            "Desconto de cheques",
+            "Desconto de duplicatas",
+            "Devedores por compra de valores e bens",
+            "Financiamento de TVM",
+            "Financiamento de infraestrutura e desenvolvimento",
+            "Financiamento de projeto",
+            "Financiamento habitacional - SFH",
+            "Financiamento habitacional  exceto SFH",
+            "Financiamento imobiliário - empreendim, exceto habitac.",
+            "Financiamento à exportação",
+            "Financiamento à importação",
+            "Financiamentos agroindustriais",
+            "Home Equity",
+            "Industrialização",
+            "Investimento",
+            "Microcrédito",
+            "Outros com característica de crédito",
+            "Outros direitos creditórios descontados",
+            "Outros empréstimos",
+            "Outros financiamentos",
+            "Outros financiamentos com interveniência",
+            "Outros financiamentos à exportação",
+            "Outros títulos descontados",
+            "Recebíveis adquiridos",
+            "Títulos e créditos a receber",
+            "Vendor"
+          ],
+          "removed": []
+        },
+        "origem": {
+          "added": [
+            "Com destinação específica",
+            "Sem destinação específica"
+          ],
+          "removed": []
+        },
+        "indexador": {
+          "added": [
+            "Flutuantes",
+            "Outros indexadores",
+            "Prefixado",
+            "Pós-fixado",
+            "TCR/TRFC",
+            "Índices de preços"
+          ],
+          "removed": []
+        }
+      }
+    },
+    "2025-02": {
+      "rows": 313564,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 8558,
+        "proporcao_ativos_problematicos": 8558
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 313564,
+        "proporcao_ativos_problematicos": 313564
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": [
+            "ARO - adiantamento de receitas orçamentárias"
+          ]
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-03": {
+      "rows": 317087,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 8476,
+        "proporcao_ativos_problematicos": 8476
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 23470,
+        "proporcao_ativos_problematicos": 23470
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-04": {
+      "rows": 318875,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 12246,
+        "proporcao_ativos_problematicos": 12246
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 19599,
+        "proporcao_ativos_problematicos": 19599
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-05": {
+      "rows": 322164,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 12751,
+        "proporcao_ativos_problematicos": 12751
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 23015,
+        "proporcao_ativos_problematicos": 23015
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-06": {
+      "rows": 322852,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 32767,
+        "proporcao_ativos_problematicos": 32767
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 23363,
+        "proporcao_ativos_problematicos": 23363
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-07": {
+      "rows": 308209,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 11369,
+        "proporcao_ativos_problematicos": 11369
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 26513,
+        "proporcao_ativos_problematicos": 26513
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-08": {
+      "rows": 309544,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 10497,
+        "proporcao_ativos_problematicos": 10497
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 27081,
+        "proporcao_ativos_problematicos": 27081
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-09": {
+      "rows": 310830,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 13300,
+        "proporcao_ativos_problematicos": 13300
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 21758,
+        "proporcao_ativos_problematicos": 21758
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-10": {
+      "rows": 309193,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 14832,
+        "proporcao_ativos_problematicos": 14832
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 20333,
+        "proporcao_ativos_problematicos": 20333
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-11": {
+      "rows": 308434,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 11570,
+        "proporcao_ativos_problematicos": 11570
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 22396,
+        "proporcao_ativos_problematicos": 22396
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    },
+    "2025-12": {
+      "rows": 310452,
+      "missing_next_target": {
+        "proporcao_inadimplencia": 310452,
+        "proporcao_ativos_problematicos": 310452
+      },
+      "missing_three_month_context": {
+        "proporcao_inadimplencia": 24017,
+        "proporcao_ativos_problematicos": 24017
+      },
+      "category_changes": {
+        "uf": {
+          "added": [],
+          "removed": []
+        },
+        "segmento": {
+          "added": [],
+          "removed": []
+        },
+        "cliente": {
+          "added": [],
+          "removed": []
+        },
+        "cnae_ocupacao": {
+          "added": [],
+          "removed": []
+        },
+        "porte": {
+          "added": [],
+          "removed": []
+        },
+        "modalidade": {
+          "added": [],
+          "removed": []
+        },
+        "submodalidade": {
+          "added": [],
+          "removed": []
+        },
+        "origem": {
+          "added": [],
+          "removed": []
+        },
+        "indexador": {
+          "added": [],
+          "removed": []
+        }
+      }
+    }
+  },
+  "missing_months": [],
+  "profiles": 399480,
+  "profile_observation_counts": {
+    "1": 23812,
+    "2": 15357,
+    "3": 11989,
+    "4": 13085,
+    "5": 11601,
+    "6": 24620,
+    "7": 10101,
+    "8": 11526,
+    "9": 10244,
+    "10": 14060,
+    "11": 16447,
+    "12": 236638
+  }
+}

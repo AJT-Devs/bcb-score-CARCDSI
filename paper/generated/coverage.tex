@@ -1,0 +1,22 @@
+\begin{table}[ht]
+\centering
+\caption{Cobertura no conjunto total de rótulos elegíveis do teste.}
+\label{tab:coverage}
+\small
+\begin{tabular}{llrrr}
+\hline
+Alvo & Método & Previsões avaliadas & Cobertura (\%) & Fora de [0,1] \\
+\hline
+Inad. & Ingênuo & 296864 & 100.000 & 0 \\
+Inad. & Média3 & 279548 & 94.167 & 0 \\
+Inad. & Drift3 & 279548 & 94.167 & 19694 \\
+Inad. & CatBoost & 296864 & 100.000 & 92681 \\
+Inad. & Chronos-2 & 267 & 0.090 & 17 \\
+Problem. & Ingênuo & 296864 & 100.000 & 0 \\
+Problem. & Média3 & 279548 & 94.167 & 0 \\
+Problem. & Drift3 & 279548 & 94.167 & 23113 \\
+Problem. & CatBoost & 296864 & 100.000 & 12138 \\
+Problem. & Chronos-2 & 267 & 0.090 & 31 \\
+\hline
+\end{tabular}
+\end{table}

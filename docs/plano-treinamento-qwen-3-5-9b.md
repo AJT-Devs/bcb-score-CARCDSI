@@ -1,3 +1,5 @@
+> Registro histórico preservado. Em 22/11/2026, a decisão vigente passou a CatBoost e Chronos-2 com baselines temporais. Este texto não comprova execução dos modelos anteriores. Consulte [o protocolo atual](protocolo-catboost-chronos2.md) e [o funcionamento efetivo](funcionamento-efetivo.md).
+
 # Plano de desenvolvimento para treinamento do Qwen 3.5 9B
 
 **Objetivo.** Medir se representações aprendidas pelo Qwen melhoram a previsão de inadimplência e ativos problemáticos agregados do SCR.data, um mês à frente, em comparação com as referências do projeto.

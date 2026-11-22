@@ -64,7 +64,7 @@ O leitor espera arquivos CSV com separador `;`. Os dados brutos devem permanecer
 Crie o ambiente virtual na raiz do projeto:
 
 ```powershell
-py -3.14 -m venv .venv
+.\scripts\bootstrap.ps1
 ```
 
 Ative-o no PowerShell:
@@ -88,7 +88,7 @@ python -m compileall -q src
 python src/main.py
 ```
 
-O ponto de entrada atual confirma a configuração do projeto. Os pipelines de treinamento e predição serão conectados quando os experimentos forem implementados.
+O experimento é executável por `python -m pipelines.experiment --output runs/2025-pilot`, com `PYTHONPATH=src`. Consulte [o funcionamento efetivo](docs/funcionamento-efetivo.md) para comandos com o Python do `.venv`, protocolo e inferência.
 
 ## Docker
 
@@ -131,10 +131,14 @@ As requisições dos provedores integrados são feitas por `src/services/ia/clie
 
 As divisões de treino e teste devem respeitar a ordem de `data_base`. O denominador das proporções é `carteira_ativa` e casos de denominador zero precisam ser tratados explicitamente.
 
-Consulte [a arquitetura e o estado de implementação](docs/arquitetura.md) para os modelos, baselines e métricas previstos nos entregáveis. Os experimentos ainda não estão implementados.
+Consulte [a arquitetura e o estado de implementação](docs/arquitetura.md) para os modelos, baselines e métricas previstos nos entregáveis. O fluxo experimental com CatBoost, Chronos-2 e baselines está implementado; a distinção entre implementado e executado está nos manifestos e em [resultados-execucao.md](docs/resultados-execucao.md).
 
 Consulte [`AGENTS.md`](AGENTS.md) para as regras completas de negócio, arquitetura, segurança e registro das atividades em `artifacts/`.
 
 ## Licença e dados
 
 Consulte a licença e as condições de uso da fonte oficial antes de redistribuir os dados. Este repositório não inclui os CSVs brutos.
+
+## Protocolo científico vigente
+
+CatBoost e Chronos-2 são os modelos principais. [Decisão e protocolo](docs/protocolo-catboost-chronos2.md), [guia do código e fluxogramas](docs/funcionamento-efetivo.md), [artigo SBC](paper/main.tex). Os entregáveis e plano Qwen preservam decisões históricas. O piloto Chronos usa uma amostra determinística em CPU; não equivale à avaliação integral.
