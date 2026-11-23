@@ -13,7 +13,7 @@ Atualização de 22/11/2026: os modelos principais são CatBoost e Chronos-2, co
 7. `src/visualization/experiment.py` e `export_paper.py`: figura, tabela TeX e evidências pequenas derivadas de resultados calculados.
 8. `src/services/ia/`: interpretação desacoplada. O experimento exporta briefing numérico sem chamada externa.
 
-Os módulos antigos de regressão linear, árvore e k-NN continuam como pontos de extensão históricos; não são experimentos executados.
+Regressão linear múltipla, árvore e k-NN usam pipeline scikit-learn persistido em `models/classical_regression.py`, com imputação e codificação ajustadas no treino. O k-NN usa amostragem reproduzível do treino para limitar custo.
 
 ## Contratos e limites
 
@@ -25,6 +25,6 @@ CatBoost usa perfil, saldos e histórico; Chronos usa três proporções histór
 
 Detalhes, comandos, funções e fluxos: [funcionamento efetivo](funcionamento-efetivo.md), [protocolo](protocolo-catboost-chronos2.md) e [execução](resultados-execucao.md).
 
-## Serviços LLM
+## Resultados locais
 
-`LLMClient.generate(prompt) -> LLMResponse` preserva provedor, texto e resposta original. `generate_briefing` permite cliente injetado e atalhos Gemini/NVIDIA. Chaves ficam no ambiente, nunca nos resultados. Testes usam mocks. O LLM recebe números calculados; não valida estatística nem cria previsões.
+O experimento grava métricas, previsões e `briefing_input.json` sem credenciais ou envio a terceiros. `services/ia/briefing.py` oferece somente formatação local determinística; as integrações Gemini e NVIDIA NIM foram removidas.

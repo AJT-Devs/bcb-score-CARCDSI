@@ -1,32 +1,49 @@
 {
-  "started_utc": "2026-11-22T06:40:11.466454+00:00",
+  "started_utc": "2026-11-23T00:31:26.837091+00:00",
   "python": "3.14.0",
-  "platform": "Windows-10-10.0.19045-SP0",
+  "platform": "Windows-11-10.0.26200-SP0",
   "arguments": {
-    "raw": "C:\\code\\bcb-score-CARCDSI\\data\\raw",
-    "interim": "data/interim/2025",
-    "output": "runs/2025-pilot",
-    "models": "catboost,chronos",
+    "raw": "data/raw",
+    "interim": "data/interim/2025-novo",
+    "output": "runs/2025-experimento-novo",
+    "models": "baselines,linear,tree,knn,catboost",
+    "knn_max_train": 5000,
     "device": "cpu",
+    "chronos_sample_modulus": 1024,
     "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c"
   },
   "models": {
+    "baselines": {
+      "status": "executed",
+      "seconds": 0.07915399999910733
+    },
+    "linear": {
+      "status": "executed",
+      "seconds": 53.98956279999766
+    },
+    "tree": {
+      "status": "executed",
+      "seconds": 226.93674590000228
+    },
+    "knn": {
+      "status": "executed",
+      "seconds": 164.24184740000055
+    },
     "catboost": {
       "status": "executed",
-      "seconds": 1508.717498900005
+      "seconds": 653.7196399000022
     },
     "chronos": {
       "status": "executed",
-      "source": "runs\\chronos-pilot",
+      "source": "runs\\2025-chronos-novo",
       "modulus": 1024,
       "selected_profile_keys": 384,
-      "seconds": 74.61250459999428,
+      "profile_key_sha256": "1daed9ef51ddb700eb61a07b8996ebb89049dd986215fba03a7eff7ff6725ff0",
+      "seconds": 22.26732500000071,
       "fine_tuning": false,
       "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
       "context": 3,
-      "device": "cpu",
-      "profile_key_sha256": "1daed9ef51ddb700eb61a07b8996ebb89049dd986215fba03a7eff7ff6725ff0",
-      "profile_hash_note": "Hash confirmado na consolidação; mesmo arquivo utilizado na execução isolada, sem alteração entre execução e consolidação."
+      "device": "cpu"
     }
   },
   "versions": {
@@ -36,92 +53,24 @@
     "catboost": "1.2.10",
     "chronos": "2.3.2"
   },
-  "git_commit": "5c406c466a3e643f0656d1c37c9b72f9a69e0850",
+  "git_commit": "4ed30bd4e40b71c146b2c5e2af48966612f4d0be",
+  "git_dirty": true,
   "availability": "Avaliação por data-base e snapshot local; publicações históricas não reconstruídas; atraso oficial de cerca de 30 dias; possível otimismo operacional.",
   "source": "https://www.bcb.gov.br/pda/desig/scrdata_2025.zip",
-  "extraction_date": "Desconhecida; mtime não equivale à extração",
+  "extraction_date": "2026-09-17",
   "seasonal12": "Indisponível: só 2025",
   "postprocessing": "Nenhum clipping",
   "fine_tuning": "Não executado",
-  "split": {
-    "train": {
-      "origins": [
-        "2025-01",
-        "2025-02",
-        "2025-03",
-        "2025-04",
-        "2025-05",
-        "2025-06",
-        "2025-07",
-        "2025-08"
-      ],
-      "targets": [
-        "2025-02",
-        "2025-03",
-        "2025-04",
-        "2025-05",
-        "2025-06",
-        "2025-07",
-        "2025-08",
-        "2025-09"
-      ],
-      "rows": 2525933,
-      "valid_labels": {
-        "proporcao_inadimplencia": 2415028,
-        "proporcao_ativos_problematicos": 2415028
-      }
-    },
-    "validation": {
-      "origins": [
-        "2025-09",
-        "2025-10"
-      ],
-      "targets": [
-        "2025-10",
-        "2025-11"
-      ],
-      "rows": 620023,
-      "valid_labels": {
-        "proporcao_inadimplencia": 591891,
-        "proporcao_ativos_problematicos": 591891
-      }
-    },
-    "test": {
-      "origins": [
-        "2025-11"
-      ],
-      "targets": [
-        "2025-12"
-      ],
-      "rows": 308434,
-      "valid_labels": {
-        "proporcao_inadimplencia": 296864,
-        "proporcao_ativos_problematicos": 296864
-      }
-    }
-  },
-  "elapsed_seconds": 1872.9862624000089,
-  "peak_memory_note": "Pico não instrumentado; execução local CPU, quatro threads CatBoost",
-  "upstream_runs": {
-    "base": "runs\\2025-pilot",
-    "extra": "runs\\chronos-pilot"
-  },
-  "original_remote_attempt": {
-    "status": "blocked",
-    "error": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
-    "seconds": 52.05721300000732
-  },
-  "chronos_sample": "SHA256 da chave JSON UTF-8, módulo 1024 = 0; contexto três meses",
-  "final_source_hashes": {
+  "source_hashes": {
     "src\\__init__.py": "ebc5bc2c447f705a6b336b31cea95ceb12a301b8830d897fa1aacace25c5c828",
     "src\\analysis\\__init__.py": "26d0a1b8b6a82ea09b8cefc7d3a7e516d44b0cf3b98b43a607eb464bcea6041c",
     "src\\analysis\\correlation.py": "765d043211ad78fc560f12f66ab6e15927ad56900f228364031eb30b1422cfcb",
     "src\\analysis\\exploratory.py": "33a2fa3e9aa4f3bbe7f6377612fc2af4ca26278696584ce8b28c728242aac2e5",
-    "src\\analysis\\panel_audit.py": "39f29fc10dc5963019b96d9f0505669af5403ffce98a56c20558c545ec810213",
+    "src\\analysis\\panel_audit.py": "2882d6bc138e1c3ddb9e05053b17241e25f6c51eab08c5dda08fe5812afa1963",
     "src\\analysis\\statistics.py": "89c0ff63a3af747519045c2bac0f5620cf7192f10315d589e941d7f0dd9ccd13",
     "src\\config\\__init__.py": "8986737ac5c91b6ceb298a243acaf47bd1c40d449759f2ccc3370ed23b7406f9",
     "src\\config\\constants.py": "41e15651d2b8a4672dd14d1067d2b4f198c91e0f2068296013d87b6ef582d35e",
-    "src\\config\\settings.py": "fb0bb859801e97462c40aced1ea62bf807df23f11912a5396ad9dac6f51ba1fd",
+    "src\\config\\settings.py": "76e5240f6b7a931edbb35e6b7e1e0330badb1b43eca80b2c9267d003bf5d4566",
     "src\\data\\__init__.py": "67a93d4ad65f54c8d054e56bba5ff6d26fc1327ac9399f018281d95fd5f2bce8",
     "src\\data\\preprocessing\\__init__.py": "557a810ae7b02ee1617ec7c72bc4af39a9be782ce49ea184d7eccd853cb6f61e",
     "src\\data\\preprocessing\\cleaner.py": "262b73627e8e2105b50d4acddf2df77f4929821698709b9f58c5bbe8b3befa63",
@@ -130,20 +79,21 @@
     "src\\data\\preprocessing\\transformer.py": "77b78645afbaeef84e0c27bec6c62a6d3f4300f4367225f6112a52c809c5dff4",
     "src\\data\\read\\__init__.py": "d494132b652e04b477ca364685be91e9bc31ff04fbe695a45d5ce32a9e6c790c",
     "src\\data\\read\\csv_reader.py": "b7f443113c19fab00b6173d3a440230f08e6568efa247663beea0b76c4b0231c",
-    "src\\data\\read\\panel.py": "6e26dca404ea5569b89684e3b95ae3b37d1be7073fe391877513d2683912a530",
+    "src\\data\\read\\panel.py": "a51b5b19e86a738a780c83afc97f1a80ce8536f8cdda2d47e5ad7dc8484573e5",
     "src\\data\\validation\\__init__.py": "7787c77605c49cfee0171329cf29eec56afc22e0d74a2b9244ce139a137ab8fa",
     "src\\data\\validation\\data_validator.py": "0a969daf2123f7a1d161a1c52638a9ccbd231ef47f902487e32cb509e33a8a06",
-    "src\\data\\validation\\panel_validator.py": "6dd51946c473d06d09dab85645bba53c9bee8aed6e19c4757ae11159c49831b1",
+    "src\\data\\validation\\panel_validator.py": "3d48a803a15e8ab2c228348f372d0a09cedb4fef6fb56719f569727e59235c05",
     "src\\features\\__init__.py": "8bfab087710811a586fa00fec7682edb0dee6f2a9c53d7905a3f6b314a0a771b",
     "src\\features\\feature_engineering.py": "3affd32b73f304756e000f7a5b36b8be3cb6254deadfc4c581564b74b2432a90",
     "src\\features\\feature_selection.py": "da7383169f68261d20addbeefbe5ede313e0efa26efdf4010d6432b2f4de4a98",
-    "src\\features\\temporal.py": "2c974a2c6d77d2aa9fbf3181bb8640948b04b9bea4f06f827d276783ced24863",
+    "src\\features\\temporal.py": "98775374e38d2758825e8de9b8e0e2944100ee312ad50f2e62f7b947138d4f2c",
     "src\\main.py": "38e1c958d73eee012482e4f0407d092f54e8955b7ce0c352d66c25624c418aac",
     "src\\models\\__init__.py": "79bc0968dc3e0b46c1533a6dae6bfc68a7a1924c85142d0e28946758d67f4ca7",
     "src\\models\\base_model.py": "a7dad70a12d7024a24c66d6ba55bfc8299197ca5dd76cbc493e66360d956c5f2",
     "src\\models\\baselines.py": "970327664290b77c0f25b6a9ecfedc2855593c3f7be7b0e7ad8f81d7c3d34d86",
-    "src\\models\\catboost_regression.py": "30dea81465d287557f51b61738321f5724dc39e310710b5510cd0747b921556f",
-    "src\\models\\chronos_forecast.py": "d4716c19b0f33ad977cbb7014f52ee6b5bf1364ca3b9e3a98aa38d8ec76ba10d",
+    "src\\models\\catboost_regression.py": "79328b12b7b897852807b0f663fb24fc5635dc7fb70377087b83e9052a143979",
+    "src\\models\\chronos_forecast.py": "04ac883b3bdcc77e0a4227009b4a68079443e846b20d72340391cfe60945412b",
+    "src\\models\\classical_regression.py": "625ca7b238e264fcad52c8bdbbc08c993a22bcc8d7a600044a54c1db461df134",
     "src\\models\\decision_tree.py": "bd455dde196845fe100f385617ced1794835afed8ac0614087f0ba1431804fce",
     "src\\models\\evaluation.py": "0dc3a22f83db2a43e75f50a2b830404e34972a304862cd2be0d24e0aa6d315d9",
     "src\\models\\linear_regression.py": "3eaa3ff35c3160e9dbc9f19cb3e78a7946e741cd8fe12f2f8ff973a21df67ffe",
@@ -152,18 +102,16 @@
     "src\\models\\temporal_validation.py": "43860d8dcb02346b9b847fb4bc54d1641b8a80bd3eb54d07dbfe9b8ea28ba2e5",
     "src\\models\\training.py": "093306a3235877471bbd34e0563e03acd3b85374c073434994eae4660b088acf",
     "src\\pipelines\\__init__.py": "99a17eae1ce36eabddd7b489f4ebf0dc4d6663b4ddf5404f81134be2fa17e270",
-    "src\\pipelines\\chronos_pipeline.py": "4738745a9d1b768cf8b6318738b3453decf377cf4beb0fc443edaf17bb614ae8",
-    "src\\pipelines\\evaluation_pipeline.py": "f1514a4747e6d8100da5da2d52d0fdb10e0f4b855fa37e0061335b7150f6297a",
-    "src\\pipelines\\experiment.py": "a255be82753522d09e8cdb5fbf9849e215cd6d50020f5c9b2ad24d8c6e37220b",
-    "src\\pipelines\\merge_forecasts.py": "61743266aa9106035c81a3347c5273a14aed9d9ba154739098adcffd77a23229",
-    "src\\pipelines\\prediction_pipeline.py": "0f4b53ded1c16d86ffb18ce36646866d6bc83932a121b3f11cc9be22c38fe194",
-    "src\\pipelines\\training_pipeline.py": "34f4d6b44fe077bce0f50043725f2a4853938b5d264225e7365f963692d23b7b",
+    "src\\pipelines\\chronos_pipeline.py": "935388e4b11fdbf4d59fffcd5f5ea8312ea30fcb6ca8c178b54ab2f5a6130fd9",
+    "src\\pipelines\\evaluation_pipeline.py": "feab5c51ba0db200bd833694fbfc12eb8a8a5bc4a25c9ff43d08a941fe532d03",
+    "src\\pipelines\\experiment.py": "b5b58f10589caf81ab6dbde1f2dc375bd0ba4a1b13a7a23c814019d297e7677e",
+    "src\\pipelines\\merge_forecasts.py": "bdcd1f686510a316c6a24f9c873136cc32042aeb126f51e167dd939d7df0c87d",
+    "src\\pipelines\\prediction_pipeline.py": "5e2e0a1a328255f098edb9a598e132871fa6fc834782bbc13a78e06eb078d2b0",
+    "src\\pipelines\\training_pipeline.py": "b2a9eb1d72196e23978af084698758318ab076814e31a8fd01d9a3b8092eec8d",
     "src\\services\\__init__.py": "ab78cd7fbf050b5d8444f97580c7b1652e216bf9511537069a13c26d4f137e5c",
-    "src\\services\\ia\\__init__.py": "8fc2f178a3ed998bedadcd9f8bff8fef79fe6ff5b4a16fa5c0ba91aec3cf0c11",
-    "src\\services\\ia\\briefing.py": "6128ed6e7733fbffe240b74acce85ab438209835b1e561c35954cede51fac2f6",
-    "src\\services\\ia\\client.py": "2213b692f956f79ec3626a10de5d3c879adc53bbe722760bec237b6736f96a2b",
-    "src\\services\\ia\\prompts.py": "ce5e572110977b70d4c6aee93d283149eb4634f0deffafa8324beb87e565d5a0",
-    "src\\services\\ia\\report_generator.py": "ac1f59ea6e5b8fd4f9111129f084216af90829df3d3eabb441894075e1e298df",
+    "src\\services\\ia\\__init__.py": "e8e9c82d8648c012c1d59319ac3e577381128abd896f30a25cc1504228833dac",
+    "src\\services\\ia\\briefing.py": "245e46f1f04e71501eb055b5f848de27db449e36f57cd07b1fcc06de0cf83e55",
+    "src\\services\\ia\\report_generator.py": "461e2637b37740d2312446a64c34be7dfd35ed834592675d3574d6a50029378b",
     "src\\utils\\__init__.py": "3f5b13fd9939ecd89e00113b82cfaf28bc66c79ad62347d7c063f767cf072fab",
     "src\\utils\\file_manager.py": "a1417be21f37eab8f6b80577400c41e8d87560e843c180c120c121f499ae8618",
     "src\\utils\\helpers.py": "406cc105c1c59df536d8640048fbf75330892cf8da10e7491a621f8db5bd82c6",
@@ -171,10 +119,9 @@
     "src\\visualization\\__init__.py": "295a9f5f496d1f30ae26b2e4bf8d57395b2292f5e2ed8ec2a6aa0fc85f1e19de",
     "src\\visualization\\charts.py": "6b9f2a0554b0a8dff0b2bbfc5fafb397536b1ed06269c55bbac965e14f16440e",
     "src\\visualization\\dashboards.py": "9e3c68bf509c7f51f7eaff5807ca1b87dfd94390c282ddd54aab9f7d9abcb4a6",
-    "src\\visualization\\experiment.py": "e327eabe3897ef5a72b186974ccb8eaff8b3703cc863d67afeafc7e2e9eeb870",
-    "src\\visualization\\export_paper.py": "5715fbf85f4fef331cf45de65ddd7bf32493b16283d47173f5ef501f8e4d6a9e"
+    "src\\visualization\\experiment.py": "30b233574e8296e780675837ff53ba137cb963060b49cffb7f332626c6989655",
+    "src\\visualization\\export_paper.py": "bf41afb34f9fa8de8b90ac9ed16c51a36ad3cb9e50dcb5d661a970d77146b9a3"
   },
-  "source_hash_note": "Hashes na consolidação, não no início do treino. Refatorações de auditoria/avaliação após início; fórmulas, atributos, cortes e configuração dos modelos preservados.",
   "environment": [
     "accelerate==1.16.0",
     "annotated-doc==0.0.7",
@@ -240,12 +187,135 @@
     "typing_extensions==4.16.0",
     "tzdata==2026.6"
   ],
-  "consolidation_seconds": 24.34780160000082,
-  "git_dirty": true,
-  "final_validation": {
-    "unit_tests": 16,
-    "compileall": "passed",
-    "pip_check": "passed",
-    "metric_preservation_atol": 1e-12
-  }
+  "split": {
+    "train": {
+      "origins": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08"
+      ],
+      "targets": [
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09"
+      ],
+      "rows": 2525933,
+      "valid_labels": {
+        "proporcao_inadimplencia": 2415028,
+        "proporcao_ativos_problematicos": 2415028
+      }
+    },
+    "validation": {
+      "origins": [
+        "2025-09",
+        "2025-10"
+      ],
+      "targets": [
+        "2025-10",
+        "2025-11"
+      ],
+      "rows": 620023,
+      "valid_labels": {
+        "proporcao_inadimplencia": 591891,
+        "proporcao_ativos_problematicos": 591891
+      }
+    },
+    "test": {
+      "origins": [
+        "2025-11"
+      ],
+      "targets": [
+        "2025-12"
+      ],
+      "rows": 308434,
+      "valid_labels": {
+        "proporcao_inadimplencia": 296864,
+        "proporcao_ativos_problematicos": 296864
+      }
+    }
+  },
+  "elapsed_seconds": 1246.1343551000027,
+  "peak_memory_note": "Pico não instrumentado; execução local CPU, quatro threads CatBoost",
+  "upstream_runs": {
+    "base": "runs\\2025-experimento-novo",
+    "extra": "runs\\2025-chronos-novo"
+  },
+  "original_remote_attempt": null,
+  "chronos_sample": "SHA256 da chave JSON UTF-8, módulo 1024 = 0; contexto três meses",
+  "final_source_hashes": {
+    "src\\__init__.py": "ebc5bc2c447f705a6b336b31cea95ceb12a301b8830d897fa1aacace25c5c828",
+    "src\\analysis\\__init__.py": "26d0a1b8b6a82ea09b8cefc7d3a7e516d44b0cf3b98b43a607eb464bcea6041c",
+    "src\\analysis\\correlation.py": "765d043211ad78fc560f12f66ab6e15927ad56900f228364031eb30b1422cfcb",
+    "src\\analysis\\exploratory.py": "33a2fa3e9aa4f3bbe7f6377612fc2af4ca26278696584ce8b28c728242aac2e5",
+    "src\\analysis\\panel_audit.py": "2882d6bc138e1c3ddb9e05053b17241e25f6c51eab08c5dda08fe5812afa1963",
+    "src\\analysis\\statistics.py": "89c0ff63a3af747519045c2bac0f5620cf7192f10315d589e941d7f0dd9ccd13",
+    "src\\config\\__init__.py": "8986737ac5c91b6ceb298a243acaf47bd1c40d449759f2ccc3370ed23b7406f9",
+    "src\\config\\constants.py": "41e15651d2b8a4672dd14d1067d2b4f198c91e0f2068296013d87b6ef582d35e",
+    "src\\config\\settings.py": "76e5240f6b7a931edbb35e6b7e1e0330badb1b43eca80b2c9267d003bf5d4566",
+    "src\\data\\__init__.py": "67a93d4ad65f54c8d054e56bba5ff6d26fc1327ac9399f018281d95fd5f2bce8",
+    "src\\data\\preprocessing\\__init__.py": "557a810ae7b02ee1617ec7c72bc4af39a9be782ce49ea184d7eccd853cb6f61e",
+    "src\\data\\preprocessing\\cleaner.py": "262b73627e8e2105b50d4acddf2df77f4929821698709b9f58c5bbe8b3befa63",
+    "src\\data\\preprocessing\\encoder.py": "0a9a8e61002e67bd9e575dbb41aa51b8f30abf75c953fbef19f52a897fd5f660",
+    "src\\data\\preprocessing\\pipeline.py": "7ddca994400119c4239a224b05bdc72e78267c2f10bf9068c23bd2888f70b540",
+    "src\\data\\preprocessing\\transformer.py": "77b78645afbaeef84e0c27bec6c62a6d3f4300f4367225f6112a52c809c5dff4",
+    "src\\data\\read\\__init__.py": "d494132b652e04b477ca364685be91e9bc31ff04fbe695a45d5ce32a9e6c790c",
+    "src\\data\\read\\csv_reader.py": "b7f443113c19fab00b6173d3a440230f08e6568efa247663beea0b76c4b0231c",
+    "src\\data\\read\\panel.py": "a51b5b19e86a738a780c83afc97f1a80ce8536f8cdda2d47e5ad7dc8484573e5",
+    "src\\data\\validation\\__init__.py": "7787c77605c49cfee0171329cf29eec56afc22e0d74a2b9244ce139a137ab8fa",
+    "src\\data\\validation\\data_validator.py": "0a969daf2123f7a1d161a1c52638a9ccbd231ef47f902487e32cb509e33a8a06",
+    "src\\data\\validation\\panel_validator.py": "3d48a803a15e8ab2c228348f372d0a09cedb4fef6fb56719f569727e59235c05",
+    "src\\features\\__init__.py": "8bfab087710811a586fa00fec7682edb0dee6f2a9c53d7905a3f6b314a0a771b",
+    "src\\features\\feature_engineering.py": "3affd32b73f304756e000f7a5b36b8be3cb6254deadfc4c581564b74b2432a90",
+    "src\\features\\feature_selection.py": "da7383169f68261d20addbeefbe5ede313e0efa26efdf4010d6432b2f4de4a98",
+    "src\\features\\temporal.py": "98775374e38d2758825e8de9b8e0e2944100ee312ad50f2e62f7b947138d4f2c",
+    "src\\main.py": "38e1c958d73eee012482e4f0407d092f54e8955b7ce0c352d66c25624c418aac",
+    "src\\models\\__init__.py": "79bc0968dc3e0b46c1533a6dae6bfc68a7a1924c85142d0e28946758d67f4ca7",
+    "src\\models\\base_model.py": "a7dad70a12d7024a24c66d6ba55bfc8299197ca5dd76cbc493e66360d956c5f2",
+    "src\\models\\baselines.py": "970327664290b77c0f25b6a9ecfedc2855593c3f7be7b0e7ad8f81d7c3d34d86",
+    "src\\models\\catboost_regression.py": "79328b12b7b897852807b0f663fb24fc5635dc7fb70377087b83e9052a143979",
+    "src\\models\\chronos_forecast.py": "04ac883b3bdcc77e0a4227009b4a68079443e846b20d72340391cfe60945412b",
+    "src\\models\\classical_regression.py": "625ca7b238e264fcad52c8bdbbc08c993a22bcc8d7a600044a54c1db461df134",
+    "src\\models\\decision_tree.py": "bd455dde196845fe100f385617ced1794835afed8ac0614087f0ba1431804fce",
+    "src\\models\\evaluation.py": "0dc3a22f83db2a43e75f50a2b830404e34972a304862cd2be0d24e0aa6d315d9",
+    "src\\models\\linear_regression.py": "3eaa3ff35c3160e9dbc9f19cb3e78a7946e741cd8fe12f2f8ff973a21df67ffe",
+    "src\\models\\nearest_neighbors.py": "e09b5078235b0f1a20dfd97016cf0645a6e32d9374b1bee882c0db5d8340a0a5",
+    "src\\models\\prediction.py": "f37973f25a7e28fdfba72fb4bd2b036e8277415f3495ec8b3f406035a61865e9",
+    "src\\models\\temporal_validation.py": "43860d8dcb02346b9b847fb4bc54d1641b8a80bd3eb54d07dbfe9b8ea28ba2e5",
+    "src\\models\\training.py": "093306a3235877471bbd34e0563e03acd3b85374c073434994eae4660b088acf",
+    "src\\pipelines\\__init__.py": "99a17eae1ce36eabddd7b489f4ebf0dc4d6663b4ddf5404f81134be2fa17e270",
+    "src\\pipelines\\chronos_pipeline.py": "935388e4b11fdbf4d59fffcd5f5ea8312ea30fcb6ca8c178b54ab2f5a6130fd9",
+    "src\\pipelines\\evaluation_pipeline.py": "feab5c51ba0db200bd833694fbfc12eb8a8a5bc4a25c9ff43d08a941fe532d03",
+    "src\\pipelines\\experiment.py": "b5b58f10589caf81ab6dbde1f2dc375bd0ba4a1b13a7a23c814019d297e7677e",
+    "src\\pipelines\\merge_forecasts.py": "bdcd1f686510a316c6a24f9c873136cc32042aeb126f51e167dd939d7df0c87d",
+    "src\\pipelines\\prediction_pipeline.py": "5e2e0a1a328255f098edb9a598e132871fa6fc834782bbc13a78e06eb078d2b0",
+    "src\\pipelines\\training_pipeline.py": "b2a9eb1d72196e23978af084698758318ab076814e31a8fd01d9a3b8092eec8d",
+    "src\\services\\__init__.py": "ab78cd7fbf050b5d8444f97580c7b1652e216bf9511537069a13c26d4f137e5c",
+    "src\\services\\ia\\__init__.py": "e8e9c82d8648c012c1d59319ac3e577381128abd896f30a25cc1504228833dac",
+    "src\\services\\ia\\briefing.py": "245e46f1f04e71501eb055b5f848de27db449e36f57cd07b1fcc06de0cf83e55",
+    "src\\services\\ia\\report_generator.py": "461e2637b37740d2312446a64c34be7dfd35ed834592675d3574d6a50029378b",
+    "src\\utils\\__init__.py": "3f5b13fd9939ecd89e00113b82cfaf28bc66c79ad62347d7c063f767cf072fab",
+    "src\\utils\\file_manager.py": "a1417be21f37eab8f6b80577400c41e8d87560e843c180c120c121f499ae8618",
+    "src\\utils\\helpers.py": "406cc105c1c59df536d8640048fbf75330892cf8da10e7491a621f8db5bd82c6",
+    "src\\utils\\logger.py": "37eee263c98b944e7fc28e6e821c1c4ac88170002479324c49085025c6314229",
+    "src\\visualization\\__init__.py": "295a9f5f496d1f30ae26b2e4bf8d57395b2292f5e2ed8ec2a6aa0fc85f1e19de",
+    "src\\visualization\\charts.py": "6b9f2a0554b0a8dff0b2bbfc5fafb397536b1ed06269c55bbac965e14f16440e",
+    "src\\visualization\\dashboards.py": "9e3c68bf509c7f51f7eaff5807ca1b87dfd94390c282ddd54aab9f7d9abcb4a6",
+    "src\\visualization\\experiment.py": "66886e3ec59591c7c046422c1982fab812acd9d77fdac1104da76e8fb9454034",
+    "src\\visualization\\export_paper.py": "a11771a012a01f326c59f3f9cf50a159cb4763df618078d23a0bc18fa7125758"
+  },
+  "source_hash_note": "Hashes na consolidação, não no início do treino. Refatorações de auditoria/avaliação após início; fórmulas, atributos, cortes e configuração dos modelos preservados.",
+  "consolidation_seconds": 27.83856200000446,
+  "extraction_date_source": "Informada pelos autores; não inferida ou comprovada pelo mtime dos arquivos.",
+  "chronos_checkpoint_sha256": "ddcda3c7508bf2528087723e98a20707cc04b7f370ae275a9fd88078ddba4f42",
+  "provenance_note": "Informação de extração fornecida pelos autores adicionada após consolidação; manifestos das execuções originais preservados."
 }

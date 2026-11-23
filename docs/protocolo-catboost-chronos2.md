@@ -1,3 +1,5 @@
+> Registro histórico do protocolo CatBoost/Chronos. Os modelos clássicos foram posteriormente adicionados; consulte o README e funcionamento efetivo para o fluxo atual.
+
 # Decisão vigente em 22/11/2026
 
 Este documento substitui as escolhas prospectivas de modelos dos entregáveis e do plano Qwen. Os entregáveis 1 e 2 e o plano Qwen são registros históricos, não evidência de experimentos executados. O pedido atual determina CatBoost, Chronos-2 e baselines temporais. Nenhum resultado de Qwen, regressão linear, árvore ou k-NN é reivindicado.

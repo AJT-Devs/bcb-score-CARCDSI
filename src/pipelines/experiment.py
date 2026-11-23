@@ -57,12 +57,24 @@ def run(args):
                                 "rows": int(mask.sum()),
                                 "valid_labels": {t: int(frame.loc[mask, f"y_{t}"].notna().sum()) for t in TARGET_DEFAULTS}}
                          for name, mask in masks.items()}
-    predictions = {t: predict_baselines(frame, t) for t in TARGET_DEFAULTS}
+    selected = args.models.split(",")
+    allowed = {"baselines", "linear", "tree", "knn", "catboost", "chronos"}
+    unknown = set(selected) - allowed
+    if unknown:
+        raise ValueError(f"Modelos desconhecidos: {sorted(unknown)}")
+    baseline_start = time.perf_counter()
+    predictions = {t: predict_baselines(frame, t) if "baselines" in selected else {} for t in TARGET_DEFAULTS}
+    if "baselines" in selected:
+        manifest["models"]["baselines"] = {"status": "executed", "seconds": time.perf_counter() - baseline_start}
     evaluate = masks["validation"] | masks["test"]
-    for method in args.models.split(","):
+    for method in selected:
         tick = time.perf_counter()
         try:
-            if method == "catboost":
+            if method in {"linear", "tree", "knn"}:
+                from models.classical_regression import train_target
+                for target in TARGET_DEFAULTS:
+                    predictions[target][method], _ = train_target(frame, masks, target, output / "models", method, getattr(args, "knn_max_train", 5000), evaluate)
+            elif method == "catboost":
                 from models.catboost_regression import train_target
                 for target in TARGET_DEFAULTS:
                     predictions[target][method], _ = train_target(frame, masks, target, output / "models")
@@ -113,7 +125,8 @@ def main():
     parser.add_argument("--raw", default=str(get_settings().raw_data_dir))
     parser.add_argument("--interim", default="data/interim/2025")
     parser.add_argument("--output", required=True)
-    parser.add_argument("--models", default="catboost,chronos")
+    parser.add_argument("--models", default="baselines,linear,tree,knn", help="Lista separada por vírgulas: baselines,linear,tree,knn,catboost,chronos")
+    parser.add_argument("--knn-max-train", type=int, default=5000)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--chronos-sample-modulus", type=int, default=1024,
                         help="1 para todos os perfis; padrão 1024 limita o piloto CPU")

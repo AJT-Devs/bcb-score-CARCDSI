@@ -11,8 +11,8 @@ def plot_metrics(table, path):
     if data.empty or not data.mae_pp.notna().any():
         return
     pivot = data.pivot(index="model", columns="target", values="mae_pp")
-    pivot = pivot.reindex([m for m in ("naive", "mean3", "drift3", "catboost", "chronos") if m in pivot.index])
-    pivot = pivot.rename(index={"naive": "Ingênuo", "mean3": "Média3", "drift3": "Drift3", "catboost": "CatBoost", "chronos": "Chronos-2"},
+    pivot = pivot.reindex([m for m in ("naive", "mean3", "drift3", "linear", "tree", "knn", "catboost", "chronos") if m in pivot.index])
+    pivot = pivot.rename(index={"naive": "Ingênuo", "mean3": "Média3", "drift3": "Drift3", "linear": "Linear", "tree": "Árvore", "knn": "k-NN", "catboost": "CatBoost", "chronos": "Chronos-2"},
                          columns={"proporcao_inadimplencia": "Inadimplência", "proporcao_ativos_problematicos": "Ativos problemáticos"})
     pivot.columns.name = None
     ax = pivot.plot.bar(figsize=(9, 4), color=["0.25", "0.65"])

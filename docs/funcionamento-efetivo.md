@@ -1,6 +1,6 @@
 # Funcionamento do projeto entregue
 
-O fluxo implementado é um experimento de regressão temporal para SCR.data 2025, com CatBoost supervisionado, Chronos-2 zero-shot e referências temporais. O protocolo e os limites científicos estão em [protocolo-catboost-chronos2.md](protocolo-catboost-chronos2.md). Resultados executados, e não apenas interfaces disponíveis, devem ser conferidos no manifesto e no relatório de execução.
+O fluxo implementado é um experimento de regressão temporal para SCR.data 2025, com regressão linear, árvore, k-NN, CatBoost, Chronos-2 zero-shot e referências temporais. O protocolo e os limites científicos estão em [protocolo-catboost-chronos2.md](protocolo-catboost-chronos2.md). Resultados executados, e não apenas interfaces disponíveis, devem ser conferidos no manifesto e no relatório de execução.
 
 ## Do CSV à avaliação
 
@@ -44,7 +44,7 @@ Todos os caminhos dos blocos Python são relativos a `src/`. `pipelines/experime
 | Auditoria complementar | `src/analysis/panel_audit.py:audit_prepared` | tabela supervisionada em chunks → lacunas, contagens e mudanças de categorias | pandas, JSON |
 | Reavaliação | `src/pipelines/evaluation_pipeline.py:evaluate_saved` | previsões e perfis salvos → métricas e briefing, sem treino | `models.evaluation.evaluate_table` compartilhado |
 | Piloto isolado | `src/pipelines/chronos_pipeline.py:run` | painel preparado filtrado por chave → Chronos e baselines | mesmo preditor e avaliação do experimento |
-| Briefing | `src/services/ia/briefing.py:generate_briefing` | números calculados → LLMResponse | contrato injetável e clientes REST existentes |
+| Briefing | `src/services/ia/briefing.py:generate_briefing` | números calculados → JSON legível local | sem rede ou credenciais |
 
 ### Leitura e elegibilidade
 
@@ -108,7 +108,7 @@ flowchart TD
   F --> G
 ```
 
-Inferência em lote do CatBoost reutiliza `model_inputs` e `build_features`, não uma cópia das transformações. A integração Chronos existe no experimento, mas a CLI de inferência persistida é de CatBoost e baselines. Para dezembro→janeiro/2026 a CLI produz previsões sem rótulos futuros; isso não é avaliação com dados de 2026.
+Inferência em lote do CatBoost reutiliza `model_inputs` e `build_features`, não uma cópia das transformações. A integração Chronos existe no experimento; a CLI de inferência persistida também aceita os modelos clássicos, CatBoost e baselines. Para dezembro→janeiro/2026 a CLI produz previsões sem rótulos futuros; isso não é avaliação com dados de 2026.
 
 ## Comandos reais (PowerShell, raiz do repositório)
 
@@ -157,27 +157,11 @@ Pop-Location
 
 R² é nulo com menos de duas observações ou target constante. Uma métrica sem amostras também é nula. Os testes verificam fórmulas com exemplos pequenos. `visualization/experiment.py` gera o gráfico apenas da tabela numérica. O exportador gera a tabela TeX e copia evidências pequenas para `paper/generated/`, sem publicar previsões por perfil, modelos ou CSVs brutos.
 
-```mermaid
-flowchart LR
-  A[metrics.csv calculado pelo código] --> B[briefing_input.json]
-  B --> C[generate_briefing com cliente explícito]
-  C --> D[build_briefing_prompt]
-  D --> E[LLMResponse: provedor, texto e raw]
-  E --> F[report_from_response]
-```
-
-Trecho real da camada existente:
-
-```python
-prompt = build_briefing_prompt(str(metrics))
-return client.generate(prompt)
-```
-
-O cliente é configurável e injetável. Os testes usam substitutos, não provedores reais. O experimento exporta `briefing_input.json`, mas **não chama** o LLM. Integração de texto depende de credenciais locais e ação explícita para envio; métricas e dados confidenciais não são enviados nesta execução. Serviços de LLM não calculam proporções, estatística ou previsões.
+O experimento exporta `briefing_input.json` com métricas calculadas localmente. A formatação textual em `services/ia/briefing.py` é determinística e não chama provedores.
 
 ## Implementado, executado e pendente
 
-Implementados: ingestão estrita, proporções, painel por calendário, atributos, cortes, baselines, treinamento/recarga CatBoost, integração zero-shot Chronos, avaliação/cobertura, exportação científica, inferência CatBoost e pacote de briefing. Execute os testes para verificar o contrato em dados sintéticos.
+Implementados: ingestão estrita, proporções, painel por calendário, atributos, cortes, baselines, treinamento e recarga dos modelos clássicos e CatBoost, integração zero-shot Chronos, avaliação/cobertura e relatório local. Execute os testes para verificar o contrato em dados sintéticos.
 
 O relatório `docs/resultados-execucao.md` e `paper/generated/manifest.json` identificam o que efetivamente terminou. Fine-tuning, backtesting adicional, pico de memória, avaliação por vintages e validação externa estão pendentes. Não há baseline sazonal12 elegível nem prova de generalização robusta. A disponibilidade do Docker foi verificada separadamente: CLI encontrada fora do PATH; engine inicialmente indisponível. Isso não impede a execução no `.venv` solicitado.
 
@@ -188,6 +172,12 @@ Na reavaliação, `n_predictions` conta previsões finitas, inclusive quando o t
 
 ## Execução final consolidada
 
-A evidência final é `runs/2025-comparison`, derivada de `runs/2025-pilot` (CatBoost e baselines completos) e `runs/chronos-pilot` (Chronos local amostrado). `src/pipelines/merge_forecasts.py:merge_runs` confere SHA256 de `profiles.csv`, rejeita duplicatas/sobrescrita do modelo, faz junção exata por `series_id`, `month`, `target_month`, `target` e chama a avaliação compartilhada. As execuções originais são preservadas. Essa consolidação foi necessária porque a execução inicial já iniciada tentou checkpoint remoto e teve bloqueio de rede; a versão final do experimento prefere o checkpoint local disponível. Use `python -m pipelines.merge_forecasts runs/2025-pilot runs/chronos-pilot --output runs/2025-comparison` e exporte esse diretório para o artigo. O comando de uma execução nova do fluxo completo permanece válido.
+Uma evidência histórica é `runs/2025-comparison`, derivada de `runs/2025-pilot` (CatBoost e baselines completos) e `runs/chronos-pilot` (Chronos local amostrado). `src/pipelines/merge_forecasts.py:merge_runs` confere SHA256 de `profiles.csv`, rejeita duplicatas/sobrescrita do modelo, faz junção exata por `series_id`, `month`, `target_month`, `target` e chama a avaliação compartilhada. As execuções originais são preservadas. Essa consolidação foi necessária porque a execução inicial já iniciada tentou checkpoint remoto e teve bloqueio de rede; a versão final do experimento prefere o checkpoint local disponível. Use `python -m pipelines.merge_forecasts runs/2025-pilot runs/chronos-pilot --output runs/2025-comparison` e exporte esse diretório para o artigo. O comando de uma execução nova do fluxo completo permanece válido.
 
 CatBoost: dois modelos treinados e avaliados. Chronos: zero-shot local executado em amostra determinística; sem fine-tuning e sem avaliação integral. Tabelas/figura do artigo vêm de `runs/2025-comparison/metrics.csv`. O briefing continua sem chamada real. Consulte o relatório de execução para números e custos, inclusive previsões fora do intervalo preservadas.
+
+## Atualização: entregável 2 e modelos clássicos
+
+O comando padrão executa baselines, `linear`, `tree` e `knn`. `--models` escolhe os métodos e `--knn-max-train` limita a amostra de linhas elegíveis de treino (uniforme, sem reposição, semente 42). O pipeline usa mediana para numéricos ausentes, escala numérica e one-hot com categorias desconhecidas ignoradas, tudo ajustado exclusivamente no treino. Para cada alvo, joblib contém estimador e pré-processamento; JSON registra parâmetros e contagens. Árvore: profundidade máxima 12, folha mínima 5; k-NN: 5 vizinhos (ou menos se treino menor), distância euclidiana e força bruta. Linear usa mínimos quadrados. Não há ajuste por teste nem clipping.
+
+Os exemplos atuais de treinamento e inferência estão no [README](../README.md). Uma comparação comum é restrita às mesmas linhas por alvo, enquanto `available` permite bases de perfis diferentes. Resultados em amostras não representam a base integral. A leitura em chunks ainda consolida todo o painel em memória. A previsão persistida agora aceita `--methods baselines,linear,tree,knn,catboost`; os supervisionados são ajustados com rótulos até setembro, portanto origens anteriores são rejeitadas. Chronos continua opcional e pode precisar obter seu checkpoint; não há integração de LLM textual.

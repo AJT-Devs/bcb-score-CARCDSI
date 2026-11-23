@@ -88,12 +88,9 @@ Novos módulos devem ser colocados na camada que possui a responsabilidade corre
 
 ## Credenciais e LLMs
 
-- Configure credenciais localmente em `.env`, usando `.env.example` como referência.
-- Nunca edite `.env` para inserir segredos em uma alteração versionável.
-- Use `NVIDIA_API_KEY` para NVIDIA NIM e `GEMINI_API_KEY` para Gemini.
-- Modelos e timeout devem ser configuráveis por `NVIDIA_MODEL`, `GEMINI_MODEL` e `LLM_REQUEST_TIMEOUT_SECONDS`.
-- O cliente deve falhar de forma explícita quando a chave necessária não estiver configurada.
-- Preserve o formato de resposta e o provedor ao criar abstrações novas, para permitir auditoria.
+- O fluxo experimental e os relatórios locais não dependem de credenciais nem de serviços externos de LLM.
+- Nunca inclua chaves ou tokens em código, logs ou resultados.
+- Chronos-2 é opcional e pode exigir obtenção de checkpoint; seus testes não devem acessar a rede.
 
 ## Fluxo de trabalho do agente
 

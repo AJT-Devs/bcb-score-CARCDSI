@@ -2,7 +2,7 @@
 
 Sistema analítico para estudar e prever risco de crédito agregado a partir dos dados mensais do Sistema de Informações de Créditos (SCR) do Banco Central do Brasil.
 
-O projeto calcula indicadores de inadimplência e ativos problemáticos, prepara atributos para modelos de Machine Learning e prevê a evolução do risco por perfil de crédito. Em uma etapa posterior, os resultados calculados pelo código podem ser interpretados por um LLM para gerar briefings. O LLM não é responsável por calcular métricas ou inventar previsões.
+O projeto calcula indicadores de inadimplência e ativos problemáticos, prepara atributos para modelos de Machine Learning e prevê a evolução do risco por perfil de crédito. Todo o processamento, treinamento, avaliação e geração de resultados funciona localmente, sem LLM ou credenciais.
 
 ## Objetivos
 
@@ -40,7 +40,7 @@ O leitor espera arquivos CSV com separador `;`. Os dados brutos devem permanecer
 │   ├── analysis/          # Análises exploratórias e estatísticas
 │   ├── features/          # Engenharia e seleção de atributos
 │   ├── models/            # Modelos, treinamento e avaliação
-│   ├── services/ia/       # Clientes, prompts e relatórios de LLM
+│   ├── services/ia/       # Relatórios locais de métricas
 │   ├── visualization/     # Gráficos e dashboards
 │   ├── pipelines/         # Orquestração dos fluxos
 │   └── utils/             # Utilitários compartilhados
@@ -108,30 +108,32 @@ docker compose up --build
 
 O comando atual do Compose valida os imports das bibliotecas principais. Ele será substituído pelo pipeline real quando existir um ponto de entrada de aplicação.
 
-## Configuração de LLM
+## Experimentos no terminal
 
-Copie `.env.example` para `.env` e preencha as chaves localmente. Nunca versione `.env`:
+Todos os exemplos usam PowerShell na raiz, após criar o ambiente e instalar `requirements.txt` conforme acima. Os arquivos de saída devem estar em diretório novo. Não é necessário Codex, chave ou serviço de LLM.
 
 ```powershell
-Copy-Item .env.example .env
+$env:PYTHONPATH = 'src'
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m compileall -q src
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m pipelines.experiment --models baselines,linear,tree,knn --knn-max-train 5000 --output runs/experimento
+.\.venv\Scripts\python.exe -m pipelines.evaluation_pipeline runs/experimento
+Import-Csv runs/experimento/metrics.csv | Where-Object { $_.split -eq 'test' -and $_.scope -eq 'common' } | Format-Table
+.\.venv\Scripts\python.exe -m pipelines.prediction_pipeline --interim data/interim/2025 --models runs/experimento/models --methods baselines,linear,tree,knn --origin 2025-11 --output runs/previsoes.csv
 ```
 
-Variáveis disponíveis:
+Escolha `baselines`, `linear`, `tree`, `knn`, `catboost` e/ou `chronos` com `--models`; baselines só aparecem se escolhidos. Chronos exige checkpoint local ou acesso para baixá-lo; não é um LLM de texto. Consulte `manifest.json` para falhas e tempos. Inferência persistida aceita os modelos clássicos, CatBoost e baselines; não implementa recarga de Chronos. Carregue arquivos joblib apenas de fontes confiáveis.
 
-- `NVIDIA_API_KEY`: chave do NVIDIA NIM.
-- `GEMINI_API_KEY`: chave do Google Gemini.
-- `NVIDIA_MODEL`: modelo NVIDIA utilizado.
-- `GEMINI_MODEL`: modelo Gemini utilizado.
-- `LLM_REQUEST_TIMEOUT_SECONDS`: timeout das requisições.
-- `DATA_RAW_DIR`: diretório dos CSVs brutos.
+Para limitar custo, k-NN usa por alvo no máximo 5.000 linhas elegíveis de treino, amostradas uniformemente sem reposição com semente 42. O JSON do modelo registra total, amostra e parâmetros; aumente `--knn-max-train` apenas após medir custo. A ingestão consolida o painel em memória e pode exigir vários GB. O baseline sazonal anual não é avaliável com somente 2025.
 
-As requisições dos provedores integrados são feitas por `src/services/ia/client.py`. `generate_briefing` também aceita um cliente que implemente `LLMClient`, permitindo outros provedores sem modificar o briefing; nomes de provedor desconhecidos são rejeitados. Testes automatizados não devem chamar provedores reais; use mocks ou stubs.
+`scope=available` mede cada modelo em todos os perfis elegíveis com previsão; `scope=common` usa a interseção dos modelos executados no alvo e partição. MAE/RMSE estão em proporção e pontos percentuais; R², cobertura, quantidades e previsões fora de [0,1] são registrados. A seleção de CatBoost usa somente validação. [Detalhes e limites](docs/funcionamento-efetivo.md).
 
 ## Validação e metodologia
 
 As divisões de treino e teste devem respeitar a ordem de `data_base`. O denominador das proporções é `carteira_ativa` e casos de denominador zero precisam ser tratados explicitamente.
 
-Consulte [a arquitetura e o estado de implementação](docs/arquitetura.md) para os modelos, baselines e métricas previstos nos entregáveis. O fluxo experimental com CatBoost, Chronos-2 e baselines está implementado; a distinção entre implementado e executado está nos manifestos e em [resultados-execucao.md](docs/resultados-execucao.md).
+Consulte [a arquitetura e o estado de implementação](docs/arquitetura.md) para os modelos, baselines e métricas previstos nos entregáveis. O fluxo experimental com modelos clássicos, CatBoost, Chronos-2 e baselines está implementado; a distinção entre implementado e executado está nos manifestos e em [resultados-execucao.md](docs/resultados-execucao.md).
 
 Consulte [`AGENTS.md`](AGENTS.md) para as regras completas de negócio, arquitetura, segurança e registro das atividades em `artifacts/`.
 
@@ -142,3 +144,24 @@ Consulte a licença e as condições de uso da fonte oficial antes de redistribu
 ## Protocolo científico vigente
 
 CatBoost e Chronos-2 são os modelos principais. [Decisão e protocolo](docs/protocolo-catboost-chronos2.md), [guia do código e fluxogramas](docs/funcionamento-efetivo.md), [artigo SBC](paper/main.tex). Os entregáveis e plano Qwen preservam decisões históricas. O piloto Chronos usa uma amostra determinística em CPU; não equivale à avaliação integral.
+
+## Reprodução da comparação de 2025 com Chronos-2
+
+Na raiz do projeto, depois de preparar o `.venv`, escolha nomes novos para as saídas; estes exemplos não sobrescrevem a execução registrada. O primeiro comando processa os 12 CSVs reais e pode exigir vários GB de memória e vários minutos. Chronos usa o checkpoint público fixado e poderá baixá-lo na primeira execução; o processamento dos dados e a inferência são locais.
+
+```powershell
+$env:PYTHONPATH = 'src'
+$env:OMP_NUM_THREADS = '4'
+$env:OPENBLAS_NUM_THREADS = '4'
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m compileall -q src
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m pipelines.experiment --raw data/raw --interim data/interim/2025-repro --output runs/2025-repro --models baselines,linear,tree,knn,catboost --knn-max-train 5000
+.\.venv\Scripts\python.exe -m analysis.panel_audit --prepared data/interim/2025-repro/supervised.csv --output runs/2025-repro/panel_audit.json
+.\.venv\Scripts\python.exe -m pipelines.chronos_pipeline --interim data/interim/2025-repro --output runs/2025-repro-chronos --modulus 1024
+.\.venv\Scripts\python.exe -m pipelines.merge_forecasts runs/2025-repro runs/2025-repro-chronos --interim data/interim/2025-repro --output runs/2025-repro-comparacao
+Import-Csv runs/2025-repro-comparacao/metrics.csv | Where-Object { $_.split -eq 'test' -and $_.scope -eq 'common' } | Format-Table
+.\.venv\Scripts\python.exe -m visualization.export_paper runs/2025-repro-comparacao
+```
+
+O último comando atualiza os arquivos gerados do artigo. As métricas `common` comparam os mesmos perfis, que ficam limitados à amostra do Chronos; `available` mostra a cobertura sobre os rótulos elegíveis. O k-NN usa até 5.000 linhas de treino por alvo, com semente 42; Chronos é zero-shot e usa as chaves cujo hash tem resto zero módulo 1024. Não há baseline sazonal anual avaliável com apenas 2025. As datas de modificação não provam a extração: os autores informaram que os arquivos foram extraídos em 17/09/2026.

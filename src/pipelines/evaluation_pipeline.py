@@ -15,7 +15,7 @@ def evaluate_saved(run, interim):
     rows = []
     for target in TARGET_DEFAULTS:
         frame = predictions.loc[predictions.target.eq(target)].merge(profiles, on="series_id", validate="many_to_one")
-        models = {c: frame[c] for c in ("naive", "mean3", "drift3", "catboost", "chronos") if c in frame}
+        models = {c: frame[c] for c in predictions.columns if c in {"naive", "mean3", "drift3", "catboost", "chronos", "linear", "tree", "knn"}}
         rows.extend(evaluate_table(frame, target, models, split_masks(frame)))
     table = pd.DataFrame(rows)
     table.to_csv(run / "metrics.csv", index=False)

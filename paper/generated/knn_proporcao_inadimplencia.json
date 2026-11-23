@@ -1,0 +1,42 @@
+{
+  "method": "knn",
+  "target": "proporcao_inadimplencia",
+  "features": [
+    "uf",
+    "segmento",
+    "cliente",
+    "cnae_ocupacao",
+    "porte",
+    "modalidade",
+    "submodalidade",
+    "origem",
+    "indexador",
+    "carteira_ativa",
+    "carteira_inadimplencia",
+    "ativo_problematico",
+    "month_number",
+    "proporcao_inadimplencia",
+    "proporcao_ativos_problematicos",
+    "proporcao_inadimplencia_lag1",
+    "proporcao_inadimplencia_lag2",
+    "proporcao_inadimplencia_mean3",
+    "proporcao_ativos_problematicos_lag1",
+    "proporcao_ativos_problematicos_lag2",
+    "proporcao_ativos_problematicos_mean3"
+  ],
+  "training_rows": 5000,
+  "eligible_training_rows": 2415028,
+  "sampling": "amostra uniforme sem reposição, somente treino, random_state=42",
+  "knn_max_train": 5000,
+  "parameters": {
+    "algorithm": "brute",
+    "leaf_size": 30,
+    "metric": "minkowski",
+    "metric_params": null,
+    "n_jobs": 1,
+    "n_neighbors": 5,
+    "p": 2,
+    "weights": "uniform"
+  },
+  "refit": false
+}

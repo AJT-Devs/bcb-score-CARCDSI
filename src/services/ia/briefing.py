@@ -1,18 +1,6 @@
-"""Construção de briefings a partir de métricas produzidas pelo ML."""
-
-from typing import Any
-
-from .client import GeminiClient, LLMClient, LLMResponse, NVIDIAClient
-from .prompts import build_briefing_prompt
+"""Representação legível de métricas previamente calculadas."""
+import json
 
 
-def generate_briefing(
-    metrics: dict[str, Any], provider: str = "gemini", *, client: LLMClient | None = None
-) -> LLMResponse:
-    prompt = build_briefing_prompt(str(metrics))
-    if client is None:
-        providers = {"nvidia": NVIDIAClient, "gemini": GeminiClient}
-        if provider not in providers:
-            raise ValueError(f"Provedor LLM desconhecido: {provider}")
-        client = providers[provider]()
-    return client.generate(prompt)
+def generate_briefing(metrics):
+    return json.dumps(metrics, ensure_ascii=False, indent=2, allow_nan=False)

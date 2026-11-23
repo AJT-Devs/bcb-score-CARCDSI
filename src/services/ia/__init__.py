@@ -1,5 +1,1 @@
-"""Integrações com provedores de Large Language Models."""
-
-from .client import GeminiClient, LLMClient, LLMResponse, NVIDIAClient
-
-__all__ = ["GeminiClient", "LLMClient", "LLMResponse", "NVIDIAClient"]
+"""Relatórios locais sem acesso a provedores externos."""

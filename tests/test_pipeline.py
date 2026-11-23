@@ -27,12 +27,15 @@ class PipelineTests(unittest.TestCase):
                     rows.append(row)
                 pd.DataFrame(rows).to_csv(raw / f"scrdata_2025{month:02}.csv", sep=";", index=False)
             args = Namespace(raw=str(raw), interim=str(root / "interim"), output=str(root / "run"),
-                             models="catboost", revision="unused-offline", device="cpu", chronos_sample_modulus=1024)
+                             models="baselines,linear,tree,knn,catboost", revision="unused-offline", device="cpu", chronos_sample_modulus=1024)
             with redirect_stdout(io.StringIO()):
                 run(args)
             output = root / "run"
             manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["models"]["catboost"]["status"], "executed")
+            for model in ("linear", "tree", "knn"):
+                self.assertEqual(manifest["models"][model]["status"], "executed")
+                self.assertTrue((output / f"models/{model}_proporcao_inadimplencia.joblib").exists())
             before = pd.read_csv(output / "metrics.csv")
             after = evaluate_saved(output, root / "interim")
             pd.testing.assert_frame_equal(before, after, check_dtype=False, atol=1e-12)

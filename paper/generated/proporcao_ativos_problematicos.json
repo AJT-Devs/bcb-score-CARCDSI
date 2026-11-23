@@ -15,13 +15,15 @@
       "validation": {
         "n_eligible": 591891,
         "n": 591891,
+        "n_predictions": 591891,
         "coverage": 1.0,
         "mae": 0.038684796161461914,
         "rmse": 0.1279363121514361,
         "mae_pp": 3.868479616146191,
         "rmse_pp": 12.793631215143611,
         "r2": 0.8738066996512269,
-        "out_of_range": 24281
+        "out_of_range": 24281,
+        "out_of_range_all": 24281
       }
     },
     {
@@ -39,13 +41,15 @@
       "validation": {
         "n_eligible": 591891,
         "n": 591891,
+        "n_predictions": 591891,
         "coverage": 1.0,
         "mae": 0.039215031099940637,
         "rmse": 0.1273563898931843,
         "mae_pp": 3.9215031099940636,
         "rmse_pp": 12.73563898931843,
         "r2": 0.8749481494636562,
-        "out_of_range": 25347
+        "out_of_range": 25347,
+        "out_of_range_all": 25347
       }
     }
   ],

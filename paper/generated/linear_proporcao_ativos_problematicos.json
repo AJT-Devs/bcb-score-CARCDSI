@@ -1,0 +1,39 @@
+{
+  "method": "linear",
+  "target": "proporcao_ativos_problematicos",
+  "features": [
+    "uf",
+    "segmento",
+    "cliente",
+    "cnae_ocupacao",
+    "porte",
+    "modalidade",
+    "submodalidade",
+    "origem",
+    "indexador",
+    "carteira_ativa",
+    "carteira_inadimplencia",
+    "ativo_problematico",
+    "month_number",
+    "proporcao_inadimplencia",
+    "proporcao_ativos_problematicos",
+    "proporcao_inadimplencia_lag1",
+    "proporcao_inadimplencia_lag2",
+    "proporcao_inadimplencia_mean3",
+    "proporcao_ativos_problematicos_lag1",
+    "proporcao_ativos_problematicos_lag2",
+    "proporcao_ativos_problematicos_mean3"
+  ],
+  "training_rows": 2415028,
+  "eligible_training_rows": 2415028,
+  "sampling": "todas as linhas elegíveis de treino",
+  "knn_max_train": null,
+  "parameters": {
+    "copy_X": true,
+    "fit_intercept": true,
+    "n_jobs": null,
+    "positive": false,
+    "tol": 1e-06
+  },
+  "refit": false
+}
