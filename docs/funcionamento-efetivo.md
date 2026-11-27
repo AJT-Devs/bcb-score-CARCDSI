@@ -1,20 +1,20 @@
 # Funcionamento do projeto entregue
 
-O fluxo implementado é um experimento de regressão temporal para SCR.data 2025, com regressão linear, árvore, k-NN, CatBoost, Chronos-2 zero-shot e referências temporais. O protocolo e os limites científicos estão em [protocolo-catboost-chronos2.md](protocolo-catboost-chronos2.md). Resultados executados, e não apenas interfaces disponíveis, devem ser conferidos no manifesto e no relatório de execução.
+O fluxo implementado é um experimento de regressão temporal para o SCR.data, com regressão linear, árvore, k-NN, CatBoost, Chronos-2 zero-shot e referências temporais. O protocolo e os limites científicos do experimento publicado, com o recorte de 2025, estão em [protocolo-catboost-chronos2.md](protocolo-catboost-chronos2.md). Os resultados de cada execução constam no manifesto e no relatório de execução.
 
 ## Do CSV à avaliação
 
 ```mermaid
 flowchart TD
-  A[data/raw/scrdata_202501.csv até scrdata_202512.csv] --> B[data/read/panel.py: load_panel]
+  A[CSVs mensais em data/raw] --> B[data/read/panel.py: load_panel]
   B --> C[UTF-8, ponto e vírgula, chunks de 50000]
   C --> D[Validar esquema, mês, chave e totais]
   D --> E[preprocessing/transformer.py: add_credit_ratios]
-  E --> F[data/interim/2025: CSVs e profiles.csv]
+  E --> F[Intermediário com CSVs mensais e profiles.csv]
   E --> G[features/temporal.py: build_features]
   G --> H[Junção t+1 e lags por calendário exato]
   H --> I[models/temporal_validation.py: split_masks]
-  I --> J[Treino jan-ago; validação set-out; teste nov]
+  I --> J[Treino, validação e teste em ordem cronológica]
   J --> K[Baselines, CatBoost e Chronos-2]
   K --> L[models/evaluation.py: metrics]
   L --> M[runs/2025-pilot: metrics.csv e predictions.csv]
@@ -73,7 +73,7 @@ result = result.merge(labels, on=["series_id", "target_month"], how="left", vali
 
 `series_id` referencia a chave completa salva em `profiles.csv`. O rótulo pertence ao mesmo perfil no mês seguinte exato. Exemplo sintético: janeiro→fevereiro é válido; fevereiro→abril não é associado quando março falta. Lags usam junções equivalentes com deslocamento de calendário, sem atravessar perfis. A média3 só existe com corrente, lag1 e lag2 válidos. Não há preenchimento futuro.
 
-Origens jan–ago treinam targets fev–set; set–out validam targets out–nov; novembro testa dezembro. CatBoost não é reajustado com validação. Histórico observado em outubro pode ser entrada da origem outubro, mas seu rótulo novembro não ajusta pesos. Janeiro tem histórico curto; média3, drift3 e Chronos precisam de março em diante. Doze meses não permitem baseline sazonal12. Perfis novos podem receber CatBoost, mas métodos de janela se abstêm; ausentes na origem não são previstos.
+O corte usa apenas pares de meses consecutivos presentes no intervalo. O último par vai para teste, os dois anteriores vão para validação e os demais vão para treino. É preciso ter pelo menos quatro pares. As origens ficam gravadas no manifesto e em `split-origins.json` no intermediário. No recorte de 2025, origens jan–ago treinam alvos fev–set, set–out validam out–nov e novembro testa dezembro. CatBoost usa a validação para escolher profundidade e mantém o ajuste em treino. A inferência com modelos persistidos exige origem igual ou posterior ao último mês-alvo usado no ajuste ou na seleção. Média3, drift3 e Chronos exigem três meses consecutivos de contexto.
 
 A avaliação usa data-base, não publicação histórica. O atraso oficial é aproximadamente 30 dias, e podem existir revisões. Data de extração local desconhecida; hashes e mtime ficam no manifesto de dados. Essa distinção impede tratar os números como desempenho operacional garantido.
 
@@ -120,13 +120,13 @@ $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m pip check
 .\.venv\Scripts\python.exe -m compileall -q src
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe -m pipelines.experiment --output runs/2025-pilot
+.\.venv\Scripts\python.exe -m pipelines.experiment --start-month 2025-01 --end-month 2025-12 --interim data/interim/2025 --output runs/2025-pilot
 ```
 
 O diretório de saída deve ser novo; a execução não sobrescreve resultados anteriores. Para mudar caminhos e executar apenas baselines:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pipelines.experiment --raw data/raw --interim data/interim/2025 --output runs/baselines --models baselines
+.\.venv\Scripts\python.exe -m pipelines.experiment --raw data/raw --start-month 2025-01 --end-month 2025-12 --interim data/interim/2025 --output runs/baselines --models baselines
 ```
 
 Para executar só o piloto Chronos sobre intermediários existentes, auditar lacunas ou recalcular métricas salvas:

@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_INTERIM = Path("data/interim/scr")
+SCR_DRIVE_FOLDER_ID = "1aCvm6NC_WQwB-muz1c-bctyFDmyRlHy-"
 
 
 @dataclass(frozen=True)

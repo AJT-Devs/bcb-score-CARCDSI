@@ -3,27 +3,28 @@ import hashlib
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from config.constants import PROFILE_COLUMNS, BALANCE_COLUMNS, TARGET_DEFAULTS
+from config.constants import PROFILE_COLUMNS, BALANCE_COLUMNS, TARGET_DEFAULTS, REQUIRED_COLUMNS
+from data.read.monthly_files import monthly_files
 from data.preprocessing.transformer import add_credit_ratios
 from data.validation.data_validator import validate_required_columns
 from data.validation.panel_validator import validate_month, valid_profile_mask, validate_unique_keys
 
 
-def load_panel(raw: Path, output: Path):
+def load_panel(raw: Path, output: Path, start=None, end=None):
     output.mkdir(parents=True, exist_ok=True)
     frames, audit, categories = [], [], {}
-    for path in sorted(raw.glob("scrdata_2025??.csv")):
+    for month, path in monthly_files(raw, start, end):
         with path.open("rb") as stream:
             digest = hashlib.file_digest(stream, "sha256").hexdigest()
         chunks, invalid = [], 0
-        for chunk in pd.read_csv(path, sep=";", encoding="utf-8-sig", decimal=",", dtype=str, keep_default_na=False, chunksize=50000):
-            required = ["data_base", *PROFILE_COLUMNS, *BALANCE_COLUMNS]
+        for chunk in pd.read_csv(path, sep=";", encoding="utf-8-sig", decimal=",", dtype=str,
+                                 usecols=lambda col: col in REQUIRED_COLUMNS, keep_default_na=False, chunksize=50000):
             validate_required_columns(chunk.columns)
             for col in PROFILE_COLUMNS:
                 categories.setdefault(col, set()).update(chunk[col].unique())
-            frame = chunk[required].copy()
+            frame = chunk
             frame["month"] = pd.to_datetime(frame.pop("data_base"), errors="raise").dt.to_period("M").astype(str)
-            validate_month(frame, f"2025-{path.stem[-2:]}", path.name)
+            validate_month(frame, month, path.name)
             for col in BALANCE_COLUMNS:
                 frame[col] = pd.to_numeric(frame[col].str.replace(",", ".", regex=False), errors="coerce")
             valid = valid_profile_mask(frame)
@@ -41,7 +42,7 @@ def load_panel(raw: Path, output: Path):
         audit.append(report)
         frames.append(monthly)
     if not frames:
-        raise FileNotFoundError(f"Nenhum CSV 2025 em {raw}")
+        raise FileNotFoundError(f"Nenhum CSV mensal em {raw} no intervalo selecionado")
     panel = pd.concat(frames, ignore_index=True)
     # Códigos estáveis durante a execução; chave completa é salva em separado.
     keys = panel[list(PROFILE_COLUMNS)].drop_duplicates().reset_index(drop=True)

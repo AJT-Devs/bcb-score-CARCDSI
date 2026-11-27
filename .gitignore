@@ -29,6 +29,11 @@ dist/
 !.env.example
 
 # Local datasets and generated data
+/data/compressed/*
+!/data/compressed/.gitkeep
+/data/raw/*
+!/data/raw/.gitkeep
+/data/interim/**/split-origins.json
 data/**/*.csv
 data/**/*.parquet
 data/**/*.feather
@@ -37,6 +42,5 @@ data/**/*.pickle
 data/**/*.joblib
 
 # Keep the documented data layout visible in the repository
-!data/**/
 !data/**/.gitkeep
 !data/data.md

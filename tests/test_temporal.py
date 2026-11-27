@@ -7,7 +7,7 @@ from data.preprocessing.transformer import add_credit_ratios
 from features.temporal import build_features
 from models.baselines import predict_baselines
 from models.evaluation import metrics
-from models.temporal_validation import split_masks
+from models.temporal_validation import split_masks, split_origins
 from models.chronos_forecast import ChronosForecaster
 
 
@@ -46,6 +46,16 @@ class TemporalTests(unittest.TestCase):
         self.assertEqual(f.loc[m["train"], "month"].max(), "2025-08")
         self.assertEqual(f.loc[m["validation"], "month"].min(), "2025-09")
         self.assertFalse((m["train"] & m["test"]).any())
+
+    def test_split_across_years_with_gap_and_saved_cut(self):
+        months = ["2024-10", "2024-11", "2024-12", "2025-01", "2025-03", "2025-04", "2025-05"]
+        origins = split_origins(months)
+        self.assertEqual(origins, {"train": ["2024-10", "2024-11"],
+                                  "validation": ["2024-12", "2025-03"], "test": ["2025-04"]})
+        sample = pd.DataFrame({"month": ["2025-03", "2025-04"]})
+        masks = split_masks(sample, origins)
+        self.assertEqual(masks["validation"].tolist(), [True, False])
+        self.assertEqual(masks["test"].tolist(), [False, True])
 
     def test_metrics_and_coverage(self):
         r = metrics([0, 1, 1], [.1, .8, np.nan])

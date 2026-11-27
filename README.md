@@ -15,7 +15,14 @@ O projeto calcula indicadores de inadimplência e ativos problemáticos, prepara
 
 ## Dados
 
-Os CSVs mensais não são enviados ao Git. Baixe os dados públicos do SCR e coloque-os em `data/raw/`.
+Os [dados públicos do SCR](data/data.md) estão organizados em ZIPs anuais de 2015 a 2026 (até setembro). Coloque os ZIPs em `data/compressed/` e prepare os CSVs localmente:
+
+```powershell
+$env:PYTHONPATH = "src"
+.\.venv\Scripts\python.exe -m pipelines.prepare_data
+```
+
+O comando preserva os CSVs existentes e extrai os meses ausentes. O [guia de dados](data/data.md) descreve o download opcional pelo Drive.
 
 - Fonte: [SCR.data - Banco Central do Brasil](https://dadosabertos.bcb.gov.br/dataset/scr_data)
 - Download anual de 2025: [scrdata_2025.zip](https://www.bcb.gov.br/pda/desig/scrdata_2025.zip)
@@ -88,7 +95,7 @@ python -m compileall -q src
 python src/main.py
 ```
 
-O experimento é executável por `python -m pipelines.experiment --output runs/2025-pilot`, com `PYTHONPATH=src`. Consulte [o funcionamento efetivo](docs/funcionamento-efetivo.md) para comandos com o Python do `.venv`, protocolo e inferência.
+O experimento aceita `--start-month` e `--end-month` no formato `AAAA-MM`, inclusive. A origem mais recente com mês-alvo disponível fica no teste, as duas anteriores com alvo ficam na validação e as restantes no treino. Consulte [o funcionamento efetivo](docs/funcionamento-efetivo.md) para o protocolo e a inferência.
 
 ## Docker
 
@@ -117,15 +124,15 @@ $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m compileall -q src
 .\.venv\Scripts\python.exe -m pip check
-.\.venv\Scripts\python.exe -m pipelines.experiment --models baselines,linear,tree,knn --knn-max-train 5000 --output runs/experimento
+.\.venv\Scripts\python.exe -m pipelines.experiment --start-month 2025-01 --end-month 2025-12 --models baselines,linear,tree,knn --knn-max-train 5000 --output runs/experimento
 .\.venv\Scripts\python.exe -m pipelines.evaluation_pipeline runs/experimento
 Import-Csv runs/experimento/metrics.csv | Where-Object { $_.split -eq 'test' -and $_.scope -eq 'common' } | Format-Table
-.\.venv\Scripts\python.exe -m pipelines.prediction_pipeline --interim data/interim/2025 --models runs/experimento/models --methods baselines,linear,tree,knn --origin 2025-11 --output runs/previsoes.csv
+.\.venv\Scripts\python.exe -m pipelines.prediction_pipeline --interim data/interim/scr --models runs/experimento/models --methods baselines,linear,tree,knn --origin 2025-11 --output runs/previsoes.csv
 ```
 
 Escolha `baselines`, `linear`, `tree`, `knn`, `catboost` e/ou `chronos` com `--models`; baselines só aparecem se escolhidos. Chronos exige checkpoint local ou acesso para baixá-lo; não é um LLM de texto. Consulte `manifest.json` para falhas e tempos. Inferência persistida aceita os modelos clássicos, CatBoost e baselines; não implementa recarga de Chronos. Carregue arquivos joblib apenas de fontes confiáveis.
 
-Para limitar custo, k-NN usa por alvo no máximo 5.000 linhas elegíveis de treino, amostradas uniformemente sem reposição com semente 42. O JSON do modelo registra total, amostra e parâmetros; aumente `--knn-max-train` apenas após medir custo. A ingestão consolida o painel em memória e pode exigir vários GB. O baseline sazonal anual não é avaliável com somente 2025.
+Para limitar custo, k-NN usa por alvo no máximo 5.000 linhas elegíveis de treino, amostradas uniformemente sem reposição com semente 42. O JSON do modelo registra total, amostra e parâmetros; aumente `--knn-max-train` após medir custo. Sem filtros de datas, o experimento usa todos os meses em `raw/`. A ingestão consolida o painel em memória, então use os filtros para executar recortes em máquinas com menos RAM. O baseline sazonal anual não integra o experimento de 2025.
 
 `scope=available` mede cada modelo em todos os perfis elegíveis com previsão; `scope=common` usa a interseção dos modelos executados no alvo e partição. MAE/RMSE estão em proporção e pontos percentuais; R², cobertura, quantidades e previsões fora de [0,1] são registrados. A seleção de CatBoost usa somente validação. [Detalhes e limites](docs/funcionamento-efetivo.md).
 
@@ -156,7 +163,7 @@ $env:OPENBLAS_NUM_THREADS = '4'
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m compileall -q src
 .\.venv\Scripts\python.exe -m pip check
-.\.venv\Scripts\python.exe -m pipelines.experiment --raw data/raw --interim data/interim/2025-repro --output runs/2025-repro --models baselines,linear,tree,knn,catboost --knn-max-train 5000
+.\.venv\Scripts\python.exe -m pipelines.experiment --raw data/raw --start-month 2025-01 --end-month 2025-12 --interim data/interim/2025-repro --output runs/2025-repro --models baselines,linear,tree,knn,catboost --knn-max-train 5000
 .\.venv\Scripts\python.exe -m analysis.panel_audit --prepared data/interim/2025-repro/supervised.csv --output runs/2025-repro/panel_audit.json
 .\.venv\Scripts\python.exe -m pipelines.chronos_pipeline --interim data/interim/2025-repro --output runs/2025-repro-chronos --modulus 1024
 .\.venv\Scripts\python.exe -m pipelines.merge_forecasts runs/2025-repro runs/2025-repro-chronos --interim data/interim/2025-repro --output runs/2025-repro-comparacao

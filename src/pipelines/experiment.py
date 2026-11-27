@@ -11,10 +11,11 @@ import hashlib
 import numpy as np
 import pandas as pd
 from config.constants import TARGET_DEFAULTS, PROFILE_COLUMNS
-from config.settings import get_settings
+from config.settings import DEFAULT_INTERIM, get_settings
+from data.read.monthly_files import file_month
 from data.read.panel import load_panel
 from features.temporal import build_features
-from models.temporal_validation import split_masks
+from models.temporal_validation import SPLIT_FILE, split_masks, split_origins
 from models.baselines import predict_baselines
 from models.evaluation import evaluate_table
 
@@ -33,15 +34,16 @@ def run(args):
                 "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
                 "git_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()),
                 "availability": "Avaliação por data-base e snapshot local; publicações históricas não reconstruídas; atraso oficial de cerca de 30 dias; possível otimismo operacional.",
-                "source": "https://www.bcb.gov.br/pda/desig/scrdata_2025.zip",
-                "extraction_date": "Desconhecida; mtime não equivale à extração", "seasonal12": "Indisponível: só 2025",
+                "source": "https://dadosabertos.bcb.gov.br/dataset/scr_data",
+                "extraction_date": "Desconhecida; mtime não equivale à extração",
                 "postprocessing": "Nenhum clipping", "fine_tuning": "Não executado"}
     manifest["source_hashes"] = {str(p): hashlib.sha256(p.read_bytes()).hexdigest()
                                  for p in sorted(Path("src").rglob("*.py"))}
     manifest["environment"] = subprocess.check_output(
         [__import__("sys").executable, "-m", "pip", "freeze"], text=True).splitlines()
     write_json(output / "manifest.json", manifest)
-    panel, audit, categories = load_panel(Path(args.raw), Path(args.interim))
+    start_month, end_month = getattr(args, "start_month", None), getattr(args, "end_month", None)
+    panel, audit, categories = load_panel(Path(args.raw), Path(args.interim), start_month, end_month)
     write_json(output / "data_audit.json", audit)
     write_json(output / "categories.json", categories)
     frame = build_features(panel)
@@ -51,17 +53,25 @@ def run(args):
                      "missing_three_month_context": {t: int(part[f"{t}_mean3"].isna().sum()) for t in TARGET_DEFAULTS}}
         for month, part in frame.groupby("month")})
     frame.to_csv(Path(args.interim) / "supervised.csv", index=False)
-    masks = split_masks(frame)
+    panel_months = sorted(frame.month.unique())
+    origins = split_origins(panel_months)
+    write_json(Path(args.interim) / SPLIT_FILE, {**origins, "panel_months": panel_months})
+    masks = split_masks(frame, origins)
     manifest["split"] = {name: {"origins": sorted(frame.loc[mask, "month"].unique()),
                                 "targets": sorted(frame.loc[mask, "target_month"].unique()),
                                 "rows": int(mask.sum()),
                                 "valid_labels": {t: int(frame.loc[mask, f"y_{t}"].notna().sum()) for t in TARGET_DEFAULTS}}
                          for name, mask in masks.items()}
+    write_json(output / "manifest.json", manifest)
     selected = args.models.split(",")
     allowed = {"baselines", "linear", "tree", "knn", "catboost", "chronos"}
     unknown = set(selected) - allowed
     if unknown:
         raise ValueError(f"Modelos desconhecidos: {sorted(unknown)}")
+    if set(selected) & {"linear", "tree", "knn", "catboost"}:
+        model_dir = output / "models"
+        model_dir.mkdir()
+        write_json(model_dir / SPLIT_FILE, origins)
     baseline_start = time.perf_counter()
     predictions = {t: predict_baselines(frame, t) if "baselines" in selected else {} for t in TARGET_DEFAULTS}
     if "baselines" in selected:
@@ -123,7 +133,9 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw", default=str(get_settings().raw_data_dir))
-    parser.add_argument("--interim", default="data/interim/2025")
+    parser.add_argument("--interim", default=str(DEFAULT_INTERIM))
+    parser.add_argument("--start-month", metavar="AAAA-MM")
+    parser.add_argument("--end-month", metavar="AAAA-MM")
     parser.add_argument("--output", required=True)
     parser.add_argument("--models", default="baselines,linear,tree,knn", help="Lista separada por vírgulas: baselines,linear,tree,knn,catboost,chronos")
     parser.add_argument("--knn-max-train", type=int, default=5000)
@@ -131,7 +143,13 @@ def main():
     parser.add_argument("--chronos-sample-modulus", type=int, default=1024,
                         help="1 para todos os perfis; padrão 1024 limita o piloto CPU")
     parser.add_argument("--revision", default="29ec3766d36d6f73f0696f85560a422f50e8498c", help="Commit do checkpoint HF")
-    run(parser.parse_args())
+    args = parser.parse_args()
+    for month in (args.start_month, args.end_month):
+        if month is not None and file_month(f"scrdata_{month.replace('-', '')}.csv") != month:
+            parser.error("As competências devem usar o formato AAAA-MM")
+    if args.start_month and args.end_month and args.start_month > args.end_month:
+        parser.error("--start-month deve ser anterior ou igual a --end-month")
+    run(args)
 
 
 if __name__ == "__main__":

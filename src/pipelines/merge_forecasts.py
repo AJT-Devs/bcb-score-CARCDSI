@@ -7,6 +7,8 @@ from pathlib import Path
 import shutil
 import time
 import pandas as pd
+from config.settings import DEFAULT_INTERIM
+from models.temporal_validation import LEGACY_SPLIT
 from pipelines.evaluation_pipeline import evaluate_saved
 
 
@@ -17,6 +19,11 @@ def merge_runs(base, extra, output, interim, model="chronos"):
     primary = pd.read_csv(base / "predictions.csv")
     incoming = pd.read_csv(extra / "predictions.csv")
     extra_manifest = json.loads((extra / "manifest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
+    split = manifest.get("split")
+    origins = {name: part["origins"] for name, part in split.items()} if split else LEGACY_SPLIT
+    if extra_manifest.get("split_origins", LEGACY_SPLIT) != origins:
+        raise ValueError("As execuções usam divisões temporais diferentes")
     expected_hash = hashlib.sha256((interim / "profiles.csv").read_bytes()).hexdigest()
     if extra_manifest.get("profile_key_sha256") != expected_hash:
         raise ValueError("Dicionário de perfis do experimento extra não corresponde ao painel")
@@ -31,7 +38,6 @@ def merge_runs(base, extra, output, interim, model="chronos"):
             shutil.copyfile(base / name, output / name)
     if (base / "models").exists():
         shutil.copytree(base / "models", output / "models")
-    manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
     manifest["upstream_runs"] = {"base": str(base), "extra": str(extra)}
     manifest["original_remote_attempt"] = manifest["models"].get(model)
     manifest["models"][model] = {"status": "executed", "source": str(extra), **extra_manifest}
@@ -54,6 +60,6 @@ if __name__ == "__main__":
     p.add_argument("base", type=Path)
     p.add_argument("extra", type=Path)
     p.add_argument("--output", type=Path, required=True)
-    p.add_argument("--interim", type=Path, default=Path("data/interim/2025"))
+    p.add_argument("--interim", type=Path, default=DEFAULT_INTERIM)
     a = p.parse_args()
     merge_runs(a.base, a.extra, a.output, a.interim)

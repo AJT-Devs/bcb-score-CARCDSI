@@ -30,7 +30,8 @@ def audit_prepared(path, output):
                                         "removed": sorted(previous.get(c, set()) - sets[c])}
                                     for c in PROFILE_COLUMNS}
         previous = sets
-    result = {"months": months, "missing_months": sorted(set(f"2025-{m:02}" for m in range(1, 13)) - set(months)),
+    calendar = pd.period_range(min(months), max(months), freq="M").astype(str) if months else []
+    result = {"months": months, "missing_months": sorted(set(calendar) - set(months)),
               "profiles": len(profiles), "profile_observation_counts": pd.Series(counts).value_counts().sort_index().to_dict()}
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return result

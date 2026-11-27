@@ -6,6 +6,7 @@ Esta pasta contém os dados utilizados pelo projeto de análise de risco de cré
 
 ```text
 data/
+├── compressed/ # ZIPs anuais locais (scrdata_AAAA.zip)
 ├── raw/        # CSVs originais baixados do Banco Central
 ├── interim/    # Dados intermediários gerados durante o processamento
 ├── processed/  # Dados prontos para análise ou modelagem
@@ -16,7 +17,24 @@ As pastas podem ser criadas localmente conforme o fluxo evoluir. Arquivos `.csv`
 
 ## Dados brutos do SCR
 
-Coloque os arquivos mensais originais em `data/raw/`. O leitor espera:
+O acervo compactado cobre janeiro de 2015 a setembro de 2026, com os doze meses de 2015 a 2025 e janeiro a setembro de 2026. Os 12 ZIPs estão na [pasta compartilhada do Google Drive](https://drive.google.com/drive/u/1/folders/1aCvm6NC_WQwB-muz1c-bctyFDmyRlHy-).
+
+Na raiz, coloque os ZIPs em `data/compressed/` e execute:
+
+```powershell
+$env:PYTHONPATH = "src"
+.\.venv\Scripts\python.exe -m pipelines.prepare_data
+```
+
+O comando verifica os nomes dos CSVs dentro dos ZIPs e extrai apenas os meses ainda ausentes em `data/raw/`. Use `--years 2015 2026` para limitar a seleção de arquivos anuais. Com os arquivos atuais, os CSVs ocupam cerca de 12 GB.
+
+Para baixar pelo Drive no mesmo comando, deixe o [rclone](https://rclone.org/drive/) disponível no PATH e configure um remote do tipo Google Drive com acesso de leitura à pasta compartilhada. Neste exemplo, o remote se chama `scr-drive`. Os ZIPs locais são preservados.
+
+```powershell
+.\.venv\Scripts\python.exe -m pipelines.prepare_data --drive-remote scr-drive
+```
+
+O leitor espera em `data/raw/`:
 
 - arquivos com extensão `.csv`;
 - separador `;`;
@@ -41,6 +59,6 @@ Fonte pública:
 2. Não versione dados brutos, dados processados, modelos serializados ou outros artefatos gerados.
 3. Preserve a competência mensal (`data_base`) para que os experimentos respeitem a ordem temporal.
 4. Não inclua dados pessoais, credenciais ou arquivos obtidos de fonte privada.
-5. Para reproduzir o projeto, cada integrante deve baixar os dados da fonte pública e colocá-los em `data/raw/` localmente.
+5. Para reproduzir o experimento do artigo, use o intervalo de janeiro a dezembro de 2025 indicado no README.
 
 O módulo [`src/data/read/csv_reader.py`](../src/data/read/csv_reader.py) descobre todos os CSVs dessa pasta, lê os arquivos com separador `;` e permite consolidá-los em um DataFrame.

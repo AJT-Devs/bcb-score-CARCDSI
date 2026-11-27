@@ -6,10 +6,11 @@ import time
 import hashlib
 import pandas as pd
 from config.constants import TARGET_DEFAULTS
+from config.settings import DEFAULT_INTERIM
 from models.chronos_forecast import ChronosForecaster, pilot_mask
 from models.baselines import predict_baselines
 from models.evaluation import evaluate_table
-from models.temporal_validation import split_masks
+from models.temporal_validation import load_origins, split_masks
 
 
 def run(interim, output, modulus=1024):
@@ -25,7 +26,8 @@ def run(interim, output, modulus=1024):
     frame = pd.concat(parts, ignore_index=True)
     checkpoint = ".tools/chronos-2" if Path(".tools/chronos-2/model.safetensors").exists() else "amazon/chronos-2"
     model = ChronosForecaster(checkpoint=checkpoint, revision="29ec3766d36d6f73f0696f85560a422f50e8498c")
-    masks = split_masks(frame)
+    origins = load_origins(interim)
+    masks = split_masks(frame, origins)
     selected = masks["validation"] | masks["test"]
     rows, tables = [], []
     for target in TARGET_DEFAULTS:
@@ -39,13 +41,13 @@ def run(interim, output, modulus=1024):
     pd.DataFrame(rows).to_csv(output / "metrics.csv", index=False)
     (output / "manifest.json").write_text(json.dumps({"modulus": modulus, "selected_profile_keys": len(ids),
         "profile_key_sha256": hashlib.sha256((interim / "profiles.csv").read_bytes()).hexdigest(),
-        "seconds": time.perf_counter() - tick, "fine_tuning": False,
+        "seconds": time.perf_counter() - tick, "fine_tuning": False, "split_origins": origins,
         "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c", "context": 3, "device": "cpu"}, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--interim", type=Path, default=Path("data/interim/2025"))
+    p.add_argument("--interim", type=Path, default=DEFAULT_INTERIM)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--modulus", type=int, default=1024)
     a = p.parse_args()
